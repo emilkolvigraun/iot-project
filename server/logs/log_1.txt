@@ -1,0 +1,10 @@
+1589023817 | DEFAULT_RECEIVER | received message: DATA0, from topic: test/topic
+1589023817 | DEFAULT_RECEIVER | received message: DATA1, from topic: test/topic
+1589023817 | DEFAULT_RECEIVER | received message: DATA2, from topic: test/topic
+1589023817 | DEFAULT_RECEIVER | received message: DATA3, from topic: test/topic
+1589023817 | DEFAULT_RECEIVER | received message: DATA4, from topic: test/topic
+1589023817 | DEFAULT_RECEIVER | received message: DATA5, from topic: test/topic
+1589023817 | DEFAULT_RECEIVER | received message: DATA6, from topic: test/topic
+1589023817 | DEFAULT_RECEIVER | received message: DATA7, from topic: test/topic
+1589023817 | DEFAULT_RECEIVER | received message: DATA8, from topic: test/topic
+1589023817 | DEFAULT_RECEIVER | received message: DATA9, from topic: test/topic

@@ -8,7 +8,9 @@ client = MQTTClient(receiver)
 client.start_loop()
 
 client.subscribe('test/topic')
-client.publish('test/topic', 'DATA')
+
+for i in range(10):
+    client.publish('test/topic', 'DATA'+str(i))
 
 client.wait(2)
 client.stop_loop()

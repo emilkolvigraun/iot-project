@@ -7,7 +7,7 @@
 import paho.mqtt.client as mqtt
 from time import sleep
 from log import Log
-log = Log()
+log = Log().log
 
 # Authours:
 # Emil Stubbe Kolvig-Raun, emstu15@student.sdu.dk
@@ -20,7 +20,7 @@ class Receiver:
     def on_message(self, client, userdata, message):
         # default method logs received message
         msg = 'received message: %s, from topic: %s'%(str(message.payload.decode("utf-8")), message.topic)
-        log.log('DEFAULT_RECEIVER', msg) 
+        log('DEFAULT_RECEIVER', msg) 
 
 # mosquitto client implementation
 class MQTTClient:
@@ -84,8 +84,6 @@ class MQTTClient:
         except:
             # throws an error, if there is no connection to begin with
             pass
-
-        log.finish()
 
 
 
