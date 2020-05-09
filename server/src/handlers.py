@@ -20,7 +20,7 @@ class Handler:
 
         self.routes = [ 
             web.get('/', self.main_page),
-            web.get('/configuraion', self.config_page),
+            web.get('/configuration', self.config_page),
             web.get('/livedata', self.live_page),
             web.get('/ventilation', self.ventilation_page)
         ]

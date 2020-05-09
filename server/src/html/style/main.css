@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 160px;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+li a.active {
+    background-color: rgb(52, 152, 219);
+    color: white;
+}
+
+li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+
+ul p {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
