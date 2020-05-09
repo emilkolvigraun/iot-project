@@ -1,0 +1,49 @@
+
+/* specifying content frame for this page */
+.content-config {
+    width: 600px;
+    height: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* this is how the buttons look */
+button {
+    background-color: rgb(52, 152, 219);
+    width: 100px;
+    height: 40px;
+}
+
+/* wrapper for divs to be side by side */
+.container {
+    display: flex;
+    text-align: left;
+}
+
+/* left side div */
+.fixed {
+    width: 49%;
+}
+
+/* right side div */
+.flex-item {
+    flex-grow: 1;
+}
+
+input[type=text]{
+    width: 200px;
+    height: 40px;
+    background-color: #f1f1f1;
+    border: none;
+    box-sizing: none;
+}
+
+select {
+    width: 200px;
+    height: 40px;
+    margin: 8px 0;
+    display: inline-block;
+    background-color: #f1f1f1;
+    border: none;
+    box-sizing: none;
+}
