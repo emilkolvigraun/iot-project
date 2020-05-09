@@ -15,7 +15,7 @@ class MessageReceiver(Receiver):
 
         # act based on topic
         if message.topic == 'sensor/registration':
-            if msg not in self.com.sensors.keys(): self.com.sensors.update({msg:{}})
+            self.com.register_sensor(msg)
 
 
 class Loop(Thread):
@@ -30,5 +30,21 @@ class Loop(Thread):
         super(Loop, self).__init__()
 
     def run(self):
+
+        jobs = len(self.com.updates)
+
+        while jobs > 0:
+            for i in range(1, jobs):
+                
+                if self.com.updates[i][0] == common.PUBLISH:
+                    self.mqtt.publish(self.com.updates[i][1], self.com.updates[i][2])
+                elif self.com.updates[i][0] == common.SUBSCRIBE:
+                    self.mqtt.subscribe(self.com.updates[i][1])
+
+            jobs = len(self.com.updates)
+
         self.mqtt.stop_loop()
+
+    def stop(self):
+        self.com.updates.clear()
 

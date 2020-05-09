@@ -60,10 +60,5 @@ class HTTPServer:
 
         # using asyncio to gather the processes as tasks and run 
         # them separately in foreground and background
-        try:
-            self.loop.run_until_complete(asyncio.gather(server))
-            self.loop.run_forever()
-        except KeyboardInterrupt:
-            exit('=================== Server Shutting Down... ====================')
-        except Exception as e:
-            exit('Exited because of error: %s'%(e))
+
+        return self.loop, asyncio.gather(server)

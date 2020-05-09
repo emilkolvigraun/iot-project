@@ -26,13 +26,10 @@ class Handler:
             web.get('/ventilation', self.ventilation_page),
 
             # configuration routes
-            # GET
             web.get('/configuration/sensor/get', self.get_sensors),
+            web.post('/configuration/sensor/set/room', self.set_sensor_configuration)
 
-            # PUT
-            web.put('/configuration/sensor/select/{key}', self.sensor_select)
         ]
-
         
     # this page provides the developer with an overview of the API
     # returns the index.html file fom /static/html
@@ -66,13 +63,9 @@ class Handler:
         response.headers['Content-Language'] = 'en'
         return response
 
-    # used to set the current sensor data
-    async def sensor_select(self, request):
-        sensor_key = request.match_info.get('key', '')
-        if sensor_key in self.com.sensors.keys():
-            return web.Response(text='success')
-        return web.Response(text='sensor not registered')
-
     # returns the registered sensors
     async def get_sensors(self, request):
         return web.Response(text=str(list(self.com.sensors.keys())))
+
+    async def set_sensor_configuration(self, request):
+        return web.Response(status=200)

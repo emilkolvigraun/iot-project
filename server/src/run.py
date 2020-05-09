@@ -46,5 +46,19 @@ if __name__ == "__main__":
     # route definitions
     http_server = HTTPServer(config, handler.routes)
     
-    # start the processes
-    http_server.run()
+    
+    try:
+
+        # start the processes
+        looper.start()    
+        loop, tasks = http_server.run()
+        
+        loop.run_until_complete(tasks)
+        loop.run_forever()
+
+    except KeyboardInterrupt:
+        looper.stop()
+        exit('=================== Server Shutting Down... ====================')
+    except Exception as e:
+        exit('Exited because of error: %s'%(e))
+
