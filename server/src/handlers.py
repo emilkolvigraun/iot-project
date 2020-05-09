@@ -69,7 +69,7 @@ class Handler:
 
     async def set_sensor_configuration(self, request):
 
-        payload = request.json()
+        payload = await request.json()
 
         print(payload)
         
