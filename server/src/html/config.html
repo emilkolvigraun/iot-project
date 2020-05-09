@@ -62,7 +62,7 @@
 
 
         function update(){
-            console.log("UPDATING!!!");
+            http("http://127.0.0.1:8000/configuration/sensor/set/room", "GET", JSON.stringify({"test":"test"}));
             setTimeout(update, 1000);
         }
 
