@@ -4,5 +4,10 @@
         "port": 8000
     },
 
-    "mqtt":"127.0.0.1"
+    "mqtt":"127.0.0.1",
+
+    "topics":{
+        "publish": [],
+        "subscribe": ["sensor/registration"]
+    }
 }

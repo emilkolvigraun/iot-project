@@ -13,22 +13,26 @@
 
 from aiohttp import web
 from aiohttp_jinja2 import render_template
+import common 
 
 class Handler:
 
-    def __init__(self):    
-
+    def __init__(self, com:common.Common):    
+        self.com = com
         self.routes = [ 
             web.get('/', self.main_page),
             web.get('/configuration', self.config_page),
             web.get('/livedata', self.live_page),
             web.get('/ventilation', self.ventilation_page),
 
-            # page routes
+            # configuration routes
             # GET
-            
+            web.get('/configuration/sensor/get', self.get_sensors),
+
             # PUT
+            web.put('/configuration/sensor/select/{key}', self.sensor_select)
         ]
+
         
     # this page provides the developer with an overview of the API
     # returns the index.html file fom /static/html
@@ -38,20 +42,37 @@ class Handler:
         response.headers['Content-Language'] = 'en'
         return response
 
+    # this page provides the user with configuration options
+    # returns the config.html file fom /static/html
     async def config_page(self, request):
         context = {}
         response = render_template("config.html", request, context)
         response.headers['Content-Language'] = 'en'
         return response
     
+    # this page provides the user with live data
+    # returns the live.html file fom /static/html
     async def live_page(self, request):
         context = {}
         response = render_template("live.html", request, context)
         response.headers['Content-Language'] = 'en'
         return response
     
+    # this page provides the user with live data and settings on ventilation
+    # returns the ventilation.html file fom /static/html
     async def ventilation_page(self, request):
         context = {}
         response = render_template("ventilation.html", request, context)
         response.headers['Content-Language'] = 'en'
         return response
+
+    # used to set the current sensor data
+    async def sensor_select(self, request):
+        sensor_key = request.match_info.get('key', '')
+        if sensor_key in self.com.sensors.keys():
+            return web.Response(text='success')
+        return web.Response(text='sensor not registered')
+
+    # returns the registered sensors
+    async def get_sensors(self, request):
+        return web.Response(text=str(list(self.com.sensors.keys())))

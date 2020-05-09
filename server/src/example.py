@@ -5,11 +5,7 @@ receiver = Receiver()
 client = MQTTClient(receiver)
 
 client.start_loop()
-
-client.subscribe('test/topic')
-
-for i in range(10):
-    client.publish('test/topic', 'DATA'+str(i))
+client.publish('sensor/registration', 'TEST_SENSOR')
 
 client.wait(2)
 client.stop_loop()

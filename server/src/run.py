@@ -28,13 +28,16 @@ if __name__ == "__main__":
 
     # as the method says...
     config = load_configuration()
+    
+    from loop import Loop
+    looper = Loop(config)
 
     # importing the handler
     from handlers import Handler
 
     # initializing the handler
     # includes all callbacks
-    handler = Handler()
+    handler = Handler(looper.com)
     
     # importing the server implmentation
     from server import HTTPServer
