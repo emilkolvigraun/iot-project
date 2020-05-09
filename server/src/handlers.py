@@ -23,7 +23,7 @@ class Handler:
             web.get('/', self.main_page),
             web.get('/configuration', self.config_page),
             web.get('/livedata', self.live_page),
-            web.get('/ventilation', self.ventilation_page),
+            web.get('/rooms', self.rooms_page),
 
             # configuration routes
             web.get('/configuration/sensor/get', self.get_sensors),
@@ -57,9 +57,9 @@ class Handler:
     
     # this page provides the user with live data and settings on ventilation
     # returns the ventilation.html file fom /static/html
-    async def ventilation_page(self, request):
+    async def rooms_page(self, request):
         context = {}
-        response = render_template("ventilation.html", request, context)
+        response = render_template("rooms.html", request, context)
         response.headers['Content-Language'] = 'en'
         return response
 
