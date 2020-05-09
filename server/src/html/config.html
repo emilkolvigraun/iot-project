@@ -102,4 +102,20 @@
         </div>
         
     </body>
+
+    <script>
+        function http(url, httptype, payload) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open(httptype, url, false); 
+            xmlHttp.setRequestHeader('Content-type','application/json; charset=utf-8');
+            response = undefined;
+            xmlHttp.onload = function () {
+                    response =  xmlHttp.responseText;
+            }
+            xmlHttp.send(payload);
+            return response
+        }
+
+        http("http://127.0.0.1:8000/configuration/sensor/set/room", "POST", JSON.stringify({"test":"test"}))
+    </script>
 </html>
