@@ -68,4 +68,9 @@ class Handler:
         return web.Response(text=str(list(self.com.sensors.keys())))
 
     async def set_sensor_configuration(self, request):
+
+        payload = request.json()
+
+        print(payload)
+        
         return web.Response(status=200)
