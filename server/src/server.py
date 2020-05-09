@@ -33,7 +33,6 @@ class HTTPServer:
 
         asyncio.set_event_loop(self.loop)
 
-        print(self.routes)
         # Setting up symmetric cookie encryption using  
         # Fernet that guarantees that a message encrypted
         # using it cannot be manipulated or read without the key
