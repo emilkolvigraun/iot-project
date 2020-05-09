@@ -22,7 +22,12 @@ class Handler:
             web.get('/', self.main_page),
             web.get('/configuration', self.config_page),
             web.get('/livedata', self.live_page),
-            web.get('/ventilation', self.ventilation_page)
+            web.get('/ventilation', self.ventilation_page),
+
+            # page routes
+            # GET
+            
+            # PUT
         ]
         
     # this page provides the developer with an overview of the API
