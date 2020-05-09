@@ -13,7 +13,7 @@
 
 from aiohttp import web
 from aiohttp_jinja2 import render_template
-import common 
+import common, json
 
 class Handler:
 
@@ -27,6 +27,7 @@ class Handler:
 
             # configuration routes
             web.get('/configuration/sensor/get', self.get_sensors),
+            web.get('/configuration/rooms/get', self.get_rooms),
             web.post('/configuration/sensor/set/room', self.set_sensor_configuration)
 
         ]
@@ -66,6 +67,11 @@ class Handler:
     # returns the registered sensors
     async def get_sensors(self, request):
         return web.Response(text=str(list(self.com.sensors.keys())))
+
+    # returns the registered sensors
+    async def get_rooms(self, request):
+        payload = json.dumps(self.com.rooms)
+        return web.Response(text=payload)
 
     async def set_sensor_configuration(self, request):
 

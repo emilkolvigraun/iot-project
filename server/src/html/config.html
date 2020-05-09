@@ -5,6 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/style/main.css">
+        <link rel="stylesheet" type="text/css" href="/style/configuration.css">
     </head>
 
     <body>
@@ -16,91 +17,30 @@
                             <p>IoT Project</p>   
                             <li><a href="/">START PAGE</a></li>
                             <li><a href="/livedata">LIVE DATA</a></li>
-                            <li><a class="active" href="/configuration">CONFIGURATION</a></li>
                             <li><a href="/rooms">ROOMS</a></li>
+                            <li><a class="active" href="/configuration">CONFIGURATION</a></li>
                         </ul> 
                     </div>
                 </div>
         
                 
                 <!-- PAGE CONTENT -->
-                <div class="content-div">
-                    <div>
-                        <div id="title_div">
-                            <h1 id="description-title">IoT - Cunning Climate System</h1>
+                <div class="content-config">
+                    <div class="container">
+                        <div class="fixed">
+                            <font>Room name:</font>
+                            <input type="text"></input>
                         </div>
-                        <div id="description_div">
-                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</h3>
-                        </div>
-                        <div id="conf-content-div">
-                            <div id="conf-div">
-                                <div id="dropdowns">
-                                    <div class="dropdown">
-                                        <button class="dropbtn">ROOM PICKER</button>
-                                        <div class="dropdown-content">
-                                        <a id="room1" href="/rooms">ROOM 1</a>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown">
-                                        <button class="dropbtn">SENSOR PICKER</button>
-                                        <div class="dropdown-content">
-                                        <a id="sesnors">Temp sensor</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="sub-content-dropdown">
-                                    <div id="increments-div">
-                                        <button class="increment_button" type="button" onclick="FIXLATER">+</button>
-                                        <button class="increment_button" type="button" onclick="FIXLATER">-</button>
-                                    </div>
-                                    <div id="increment_label">
-                                        <p id="inc_label">SOMETHING SOMETHING</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div id="sliders-div">
-                                <div id="conf-sliders">
-                                <div class="slidecontainer">
-                                    <p>ROOM HEIGHT</p>
-                                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                                </div>
-                                <div class="slidecontainer">
-                                    <p>ROOM WIDTH</p>
-                                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                                </div>
-                                <div class="slidecontainer">
-                                    <p>ROOM LENGTH</p>
-                                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                                </div>
-                                <div class="slidecontainer">
-                                    <p>AMOUNT OF WINDOWS</p>
-                                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                                </div>
-                                <div class="slidecontainer">
-                                    <p>WINDOW WIDTH</p>
-                                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                                </div>
-                                <div class="slidecontainer">
-                                    <p>TEMPERATURE SETPOINT: NIGHT</p>
-                                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                                </div>
-                                <div class="slidecontainer">
-                                    <p>TEMPERATURE SETPOINT: DAY</p>
-                                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                                </div>
-                                </div>
-                            </div>
-                            <div id="current-conf-div"></div>
-                            <div id="save-div">
-                                <button class="save_btn" type="button" onclick="FIXLATER">SAVE CONFIGURATION</button>
-                            </div>
+                        <div class="flex-item">
+                            <font>Sensor:</font><br>
+                            <select id="sensors">
+                            </select>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        
+                    <button style="margin-right: 90px;" onclick="storeRoomData()">save</button>
+                <div>
+            <div>
+                
     </body>
 
     <script>
@@ -116,6 +56,17 @@
             return response
         }
 
-        http("http://127.0.0.1:8000/configuration/sensor/set/room", "POST", JSON.stringify({"test":"test"}))
+        function storeRoomData(){
+            http("http://127.0.0.1:8000/configuration/sensor/set/room", "POST", JSON.stringify({"test":"test"}));
+        }
+
+
+        function update(){
+            console.log("UPDATING!!!");
+            setTimeout(update, 1000);
+        }
+
+        update();
+
     </script>
 </html>

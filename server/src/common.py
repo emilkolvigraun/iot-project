@@ -7,6 +7,8 @@ class Common:
     sensors: dict = {}
     updates: list = [()]
 
+    rooms: dict = {}
+
     def __init__(self):
         pass
 
