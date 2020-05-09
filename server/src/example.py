@@ -1,6 +1,5 @@
 from mqtt_client import Receiver, MQTTClient
 
-
 receiver = Receiver()
 
 client = MQTTClient(receiver)

@@ -1,5 +1,15 @@
-# python 3.7.4
+#!/usr/bin/env python3.7.4
 
+"""
+    Handlers for the http server implemented here
+
+    @Author     Emil Stubbe Kolvig-Raun
+    @Contanct   emstu15@student.sdu.dk
+
+    @Author     Morten Abrahamsen Olesen
+    @Contanct   moole15@student.sdu.dk
+
+"""
 # required libraries:
 # paho-mqtt
 # time
@@ -8,10 +18,6 @@ import paho.mqtt.client as mqtt
 from time import sleep
 from log import Log
 log = Log().log
-
-# Authours:
-# Emil Stubbe Kolvig-Raun, emstu15@student.sdu.dk
-# Morten Abrahamsen Olesen, moole15@student.sdu.dk
 
 # Receiver interface, passed to an MQTT client
 class Receiver:
