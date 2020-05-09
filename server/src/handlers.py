@@ -28,6 +28,7 @@ class Handler:
             # configuration routes
             web.get('/configuration/sensor/get', self.get_sensors),
             web.get('/configuration/rooms/get', self.get_rooms),
+            web.get('/configuration/rooms/get/configuration/{room}', self.get_room_configuration),
             web.post('/configuration/sensor/set/room', self.set_sensor_configuration)
 
         ]
@@ -68,9 +69,17 @@ class Handler:
     async def get_sensors(self, request):
         return web.Response(text=str(list(self.com.sensors.keys())))
 
-    # returns the registered sensors
+    # returns the configured rooms
     async def get_rooms(self, request):
-        payload = json.dumps(self.com.rooms)
+        return web.Response(text=str(list(self.com.rooms.keys())))
+
+    # returns the configured rooms
+    async def get_room_configuration(self, request):
+        room = request.match_info.get('room', '')
+        configuration = {}
+        if room in self.com.rooms.keys():
+            configuration = self.com.rooms[room]
+        payload = json.dumps(configuration)
         return web.Response(text=payload)
 
     async def set_sensor_configuration(self, request):
