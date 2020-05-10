@@ -39,7 +39,6 @@ class Handler:
     async def login(self, request):
         payload = await request.json()
         username = payload['username']
-        print(username)
         if username not in list(self.users.keys()):
             return web.Response(status=401) # unauthorized
         elif username in list(self.users.keys()) and payload['password'] == self.users[username]:
