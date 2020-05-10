@@ -1,66 +1,122 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>IoT Project - Ventilation</title>
+        <title>IoT Project - Configuration</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/style/main.css">
+        <link rel="stylesheet" type="text/css" href="/style/configuration.css">
     </head>
 
-
     <body>
-        <div class="page-content" >
-            <div class="w3-sidebar w3-light-grey w3-bar-block">
-                <div class="navbar-div">
-                    <ul>
-                        <p>IoT Project</p>   
-                        <li><a href="/">START PAGE</a></li>
-                        <li><a href="/livedata">LIVE DATA</a></li>
-                        <li><a href="/configuration">CONFIGURATION</a></li>
-                        <li><a class="active" href="/rooms">ROOMS</a></li>
-                    </ul>
-                </div>
-            </div>
-    
-            
-            <!-- PAGE CONTENT -->
-            <div class="content-div">
-                <div>
-                    <div id="title_div">
-                        <h1 id="description-title">IoT - Cunning Climate System</h1>
+        <div>
+            <div class="page-content" >
+                    <div class="navbar-div">
+                        <ul>
+                            <p>IoT Project</p>   
+                            <li><a href="/">Start Page</a></li>
+                            <li><a href="/livedata">Live Data</a></li>
+                            <li><a class="active"  href="/rooms">Rooms</a></li>
+                        </ul> 
                     </div>
-                    <div>
-                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.</h3>
-                    </div>
-                    <div id="top-section">
-                        <div id="picker-section">
-                            <label for="rooms">Select room:</label>
-                            <select id="rooms">
-                            </select>
-                            <div id="inc_buttons">
-                                <button class="increment_button" onclick="get_rooms()">+</button>
-                                <button class="increment_button" onclick="decrement_rooms()">-</button>
+        
+                
+                <!-- PAGE CONTENT -->
+                <div class="content-config">
+                    <div style="border-bottom: solid; padding-bottom: 10px;"><font style="margin-left: -400px; font-size: 22px;">Rooms</font></div>
+                    <div style="margin-left: 100px;">
+
+                        <div class="container">
+                            <div class="fixed">
+                                <font>Room:</font><br>
+                                <select id="roomSelect" onchange="setRoomParams()">
+                                <option value="NaN"></option>
+                                </select><br>
+                                <!-- VENTILATION true/false -->
+                                <font>Ventilation status:</font><br>
+                                <input id="ventilationStatus" type="text" disabled="disabled" value=""></input><br>
+                                <!-- SETPOINT NIGHT ℃ -->
+                                <font>T setpoint NIGHT:</font><br>
+                                <input id="setpointNight" type="text" disabled="disabled" value=""></input><br>
+                                <!-- SETPOINT DAY ℃ -->
+                                <font>T setpoint DAY:</font><br>
+                                <input id="setpointDay" type="text" disabled="disabled" value=""></input><br>
+                                <!-- NUMBER OF WINDOWS integer -->
+                                <font># of windows:</font><br>
+                                <input id="nrOfWindows" type="text" disabled="disabled" value=""></input>
+                            </div>
+                            <div class="flex-item" style="text-align: left;">
+                                <div style="margin-top: 21px;">
+                                    <button style="width: 40px; font-size: 22px; font-size: bold; height: 40px; margin-right: 5px; background-color: #2ECC71; padding: 0px;" onclick="newRoom()">+</button>
+                                    <button style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: #E74C3C; padding: 0px;" onclick="deleteCurrentRoom()">-</button><br>
+                                </div>
+                                <font>Sensor:</font><br>
+                                <input id="sensorSelected" type="text" disabled="disabled" value=""></input><br>
+                                <!-- ROOM SIZE M^3 -->
+                                <font>Room size:</font><br>
+                                <input id="roomSize" type="text" disabled="disabled" value=""></input><br>
+                                <!-- WINDOW SIZE M^2 -->
+                                <font>Window size:</font><br>
+                                <input id="windowSize" type="text" disabled="disabled" value=""></input>
+                            </div>
+                        </div>
+                        <div id="roomImage" style="width: 300px; height: 300px; background-color: rgb(52, 152, 219); margin-left: 90px; margin-top: 0px; border: 1px solid black; ">
                             </div>
                         </div>
                     </div>
-                    <div id="middle-section">
-                        <p id="window_size">f</p>
-                        <p id="room_size">f</p>
-                        <p id="num_windows">f</p>
-                        <p id="ventilation_status">f</p>
-                        <p id="setpoint_night">f</p>
-                        <p id="setpoint_day">f</p>
-                    </div>
-                    <div id="buttom-section">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                <div>
+            <div>           
     </body>
 
     <script>
-        function http(){
+        var ventilation = false;
+        var amountOfWindows = 0;
+
+        function getWindows(){
+            image = document.getElementById("roomImage")
+            if (amountOfWindows == 1){
+                image.innerHTML = '<div id="window1" style="width: 200px; height: 20px; background-color: #f1f1f1; border: 1px solid black; margin-left: 50px;"></div>';
+                if (ventilation == true){
+                    image.innerHTML += '<div id="ventilationImg" style="width: 50px; height: 50px; background-color: #F1948A; border: 1px solid black; margin-left: 125px; margin-top: 100px;"></div>';
+
+                }
+
+            } else if (amountOfWindows == 2){
+                image.innerHTML = '<div id="window1" style="width: 200px; height: 20px; background-color: #f1f1f1; border: 1px solid black; margin-left: 50px;"></div>';
+                image.innerHTML += '<div id="window2" style="width: 20px; height: 200px; float: right; background-color: #f1f1f1; border: 1px solid black; margin-top: 30px;"></div>';
+                if (ventilation == true){
+                    image.innerHTML += '<div id="ventilationImg" style="width: 50px; height: 50px; background-color: #F1948A; border: 1px solid black; margin-left: 125px; margin-top: 100px;"></div>';
+
+                }
+
+            } else if (amountOfWindows == 3){
+                image.innerHTML = '<div id="window1" style="width: 200px; height: 20px; background-color: #f1f1f1; border: 1px solid black; margin-left: 50px;"></div>';
+                image.innerHTML += '<div id="window2" style="width: 20px; height: 200px; float: right; background-color: #f1f1f1; border: 1px solid black; margin-top: 30px;"></div>';
+                image.innerHTML += '<div id="window3" style="width: 20px; height: 200px; float: left; background-color: #f1f1f1; border: 1px solid black; margin-top: 30px;">';
+                if (ventilation == true){
+                    image.innerHTML += '<div id="ventilationImg" style="width: 50px; height: 50px; background-color: #F1948A; border: 1px solid black; margin-left: 125px; margin-top: 100px;"></div>';
+
+                }
+                
+            } else if (amountOfWindows == 4){
+                image.innerHTML = '<div id="window1" style="width: 200px; height: 20px; background-color: #f1f1f1; border: 1px solid black; margin-left: 50px;"></div>';
+                image.innerHTML += '<div id="window2" style="width: 20px; height: 200px; float: right; background-color: #f1f1f1; border: 1px solid black; margin-top: 30px;"></div>';
+                image.innerHTML += '<div id="window3" style="width: 20px; height: 200px; float: left; background-color: #f1f1f1; border: 1px solid black; margin-top: 30px;">';
+
+                if (ventilation == true){
+                    image.innerHTML += '<div id="ventilationImg" style="width: 50px; height: 50px; background-color: #F1948A; border: 1px solid black; margin-left: 125px; margin-top: 100px;"></div>';
+                    image.innerHTML += '<div id="window4" style="width: 200px; height: 20px; background-color: #f1f1f1; border: 1px solid black; margin-left: 50px; margin-top: 104px;"></div>';
+                } else {
+                    image.innerHTML += '<div id="window4" style="width: 200px; height: 20px; background-color: #f1f1f1; border: 1px solid black; margin-left: 50px; margin-top: 256px;">';
+                }
+            } else if (ventilation == true) {
+                image.innerHTML = '<div id="ventilationImg" style="width: 50px; height: 50px; background-color: #F1948A; border: 1px solid black; margin-left: 125px; margin-top: 122px;"></div>';     
+            } else {
+                image.innerHTML = '';
+            }
+        }
+
+        function http(url, httptype, payload) {
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.open(httptype, url, false); 
             xmlHttp.setRequestHeader('Content-type','application/json; charset=utf-8');
@@ -72,6 +128,96 @@
             return response
         }
 
-        http("http://127.0.0.1:8000/configuration/rooms/get/", "GET", null)
+        function getSelectedOption(sel) {
+            var opt;
+            for ( var i = 0, len = sel.options.length; i < len; i++ ) {
+                opt = sel.options[i];
+                if ( opt.selected === true ) {
+                    break;
+                }
+            }
+            return opt;
+        }
+
+        function parseStringToList(string){
+            string = string.replace("[", "").replace("]", "");
+            string = string.split("'").join("");
+            return string.split(",");
+        }
+        
+        function deleteCurrentRoom(){
+            select = document.getElementById("roomSelect");
+            selection = getSelectedOption(select);
+            http("http://127.0.0.1:8000/configuration/rooms/delete/configuration/"+selection.value, "DELETE", null);
+            updateRoomContent();
+            setRoomParams();
+        }
+
+        function contains(a, obj) {
+            var i = a.length;
+            while (i--) {
+            if (a[i].trim() === obj.trim()) {
+                return true;
+            }
+            }
+            return false;
+        }
+
+        function updateRoomContent(){
+            rooms = http("http://127.0.0.1:8000/configuration/rooms/get", "GET", null);
+            rooms = parseStringToList(rooms);
+            select = document.getElementById("roomSelect");
+            selection = getSelectedOption(select);
+            if (contains(rooms, selection.value)){
+                select.innerHTML = "<option style="+'"font-weight: bold;"'+"value="+ selection.value +">"+selection.value+"</option>";
+            } else {
+                select.innerHTML = "<option value=NaN></option>";
+            }
+            for (i = 0; i < rooms.length; i++){
+                select.innerHTML += "<option value="+ rooms[i] +">"+ rooms[i] +"</option>";
+            }
+        }
+
+        function getRooms(){
+            updateRoomContent();
+            setTimeout(getRooms, 1000);
+        }
+
+        function setRoomParams(){
+            select = document.getElementById("roomSelect");
+            selection = getSelectedOption(select).value;
+
+            if (selection.length < 1){
+                return;
+            }
+            
+            params = http("http://127.0.0.1:8000/configuration/rooms/get/configuration/"+selection, "GET", null);
+            params = JSON.parse(params);
+            
+            document.getElementById("sensorSelected").value = params["sensor"];
+            document.getElementById("roomSize").value = ((parseInt(params["roomWidth"]) * parseInt(params["roomLength"])) * parseInt(params["roomHeight"])) + " m^3";
+            document.getElementById("windowSize").value = (parseInt(params["windowWidth"]) * parseInt(params["windowHeight"])) + " m^2";
+            document.getElementById("setpointDay").value = (parseInt(params["tDay"])) + " ℃";
+            document.getElementById("setpointNight").value = (parseInt(params["tNight"])) + " ℃";
+            document.getElementById("nrOfWindows").value = (parseInt(params["nrOfWindows"])) + " pcs";
+            amountOfWindows = parseInt(params["nrOfWindows"]);
+
+            if (params["ventilation"] == true){
+                document.getElementById("ventilationStatus").value = "ENABLED";   
+                ventilation = true;    
+            } else {
+                document.getElementById("ventilationStatus").value = "DISABLED";       
+                ventilation = false;    
+            }
+
+            getWindows();
+        }
+
+        function newRoom(){
+            location.href = '/configuration';
+        }
+
+        getRooms();
+        setRoomParams();
     </script>
 </html>

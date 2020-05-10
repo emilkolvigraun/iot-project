@@ -1,38 +1,86 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>IoT Project - Live Data</title>
+        <title>IoT Project - Configuration</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/style/main.css">
+        <link rel="stylesheet" type="text/css" href="/style/configuration.css">
     </head>
+
     <body>
-        <div class="page-content" >
-            <div class="w3-sidebar w3-light-grey w3-bar-block">
-                <div class="navbar-div">
-                    <ul>
-                        <p>IoT Project</p>   
-                        <li><a href="/">START PAGE</a></li>
-                        <li><a class="active" href="/livedata">LIVE DATA</a></li>
-                        <li><a href="/configuration">CONFIGURATION</a></li>
-                        <li><a href="/rooms">ROOMS</a></li>
-                    </ul> 
-                </div>
-            </div>
-    
-            
-            <!-- PAGE CONTENT -->
-            <div class="content-div">
+        <div>
+            <div class="page-content" >
+                    <div class="navbar-div">
+                        <ul>
+                            <p>IoT Project</p>   
+                            <li><a href="/">Start Page</a></li>
+                            <li><a class="active" href="/livedata">Live Data</a></li>
+                            <li><a href="/rooms">Rooms</a></li>
+                        </ul> 
+                    </div>
+        
+                
+                <!-- PAGE CONTENT -->
+                <div class="content-config">
+                    <div style="border-bottom: solid; padding-bottom: 10px;"><font style="margin-left: -400px; font-size: 22px;">Live Data</font></div>
+                    <div style="text-align: center;">
+                        <!-- CONTENT -->
+                        <div class="container">
+
+                            <div class="fixed" style="width:49%; text-align: center;">
+                                <font>Room:</font><br>
+                                <select id="roomSelect" onchange="setRoomParams()">
+                                    <option value="NaN"></option>
+                                </select>
+                            </div>
+                            <div class="flex-item" style="width:49%; text-align: center;">
+                                <font>Time period:</font><br>
+                                <input type="range" min="1" max="1000" value="0" class="slider" id="fromPeriodSlider" style="width: 90%;"></input>
+                                <input type="range" min="1" max="1000" value="1000" class="slider" id="toPeriodSlider" style="width: 90%;"></input>
+                                <font style="float:right;" id="fromPeriod">0000 00-00 00:00</font><font id="toPeriod" style="float:left;">0000 00-00 00:00</font>
+                            </div>
+                        </div>
+                        <div id="temperatureGraphContainer" style="height: 300px; width:100%;"></div>
+                        <div id="humidityGraphContainer" style="height: 300px; width:100%;"></div>
+                        <div id="luxGraphContainer" style="height: 300px; width:100%;"></div>
+                        <div id="ventilationGraphContainer" style="height: 300px; width:100%;"></div>
+                     </div>
                 <div>
-                    <div id="title_div">
-                        <h1 id="description-title">IoT - Cunning Climate System</h1>
-                    </div>
-                    <div id="description_div">
-                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>   
-</body>
+            <div>           
+    </body>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script>
+    
+
+        var temperatureData = [];
+        var temperatureGraph = new CanvasJS.Chart("temperatureGraphContainer", {
+            title :{ text: "Temperature", fontSize: 22, fontFamily: "tahoma", },
+            axisY: { title: "temperature [celcius]", titleFontSize: 18, includeZero: false },  
+            axisX: { titleFontSize: 18, title: "Time [Minutes]" },    
+            data: [{ type: "line", dataPoints: temperatureData }] });
+        var humidityData = [];
+        var humidityGraph = new CanvasJS.Chart("humidityGraphContainer", {
+            title :{ text: "Humidity", fontSize: 22, fontFamily: "tahoma", },
+            axisY: { title: "humidity [g/m^3]", titleFontSize: 18, includeZero: false },  
+            axisX: { titleFontSize: 18, title: "Time [Minutes]" },    
+            data: [{ type: "line", dataPoints: humidityData }] });
+        var luxData = [];
+        var luxGraph = new CanvasJS.Chart("luxGraphContainer", {
+            title :{ text: "Lighting", fontSize: 22, fontFamily: "tahoma", },
+            axisY: { title: "lightlevel [lux]", titleFontSize: 18, includeZero: false },  
+            axisX: { titleFontSize: 18, title: "Time [Minutes]" },    
+            data: [{ type: "line", dataPoints: luxData }] });
+        var ventilationData = [];
+        var ventilationGraph = new CanvasJS.Chart("ventilationGraphContainer", {
+            title :{ text: "Ventilation Intensity", fontSize: 22, fontFamily: "tahoma", },
+            axisY: { title: "power [watt]", titleFontSize: 18, includeZero: false },  
+            axisX: { titleFontSize: 18, title: "Time [Minutes]" },    
+            data: [{ type: "line", dataPoints: ventilationData }] });
+
+    temperatureGraph.render();
+    humidityGraph.render();
+    luxGraph.render();
+    ventilationGraph.render();
+    </script>
 </html>

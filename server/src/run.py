@@ -21,13 +21,16 @@ def load_configuration():
     with open('../etc/config.json') as cf:
         config = json.loads(''.join(cf.readlines()))
 
-    return config
+    with open('../etc/users.json') as cf:
+        users = json.loads(''.join(cf.readlines()))
+
+    return config, users
 
 
 if __name__ == "__main__":
 
     # as the method says...
-    config = load_configuration()
+    config, users = load_configuration()
     
     from loop import Loop
     looper = Loop(config)
@@ -37,7 +40,7 @@ if __name__ == "__main__":
 
     # initializing the handler
     # includes all callbacks
-    handler = Handler(looper.com)
+    handler = Handler(looper.com, users)
     
     # importing the server implmentation
     from server import HTTPServer

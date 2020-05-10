@@ -31,20 +31,20 @@ class Loop(Thread):
 
     def run(self):
 
-        jobs = len(self.com.updates)
+        jobs = self.com.number_of_updates()
 
         while jobs > 0:
-            for i in range(1, jobs):
-                
-                if self.com.updates[i][0] == common.PUBLISH:
-                    self.mqtt.publish(self.com.updates[i][1], self.com.updates[i][2])
-                elif self.com.updates[i][0] == common.SUBSCRIBE:
-                    self.mqtt.subscribe(self.com.updates[i][1])
+            for task in self.com.tasks():
+                print(task)
+                if task[0] == common.PUBLISH:
+                    self.mqtt.publish(task[1], task[2])
+                elif task[0] == common.SUBSCRIBE:
+                    self.mqtt.subscribe(task[1])
 
-            jobs = len(self.com.updates)
+            jobs = self.com.number_of_updates()
 
         self.mqtt.stop_loop()
 
     def stop(self):
-        self.com.updates.clear()
+        self.com.stop()
 

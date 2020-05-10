@@ -1,61 +1,72 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>IoT Project</title>
+        <title>IoT Project - Configuration</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/style/main.css">
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" type="text/css" href="/style/configuration.css">
     </head>
 
     <body>
-    <div class="page-content" >
-        <div class="w3-sidebar w3-light-grey w3-bar-block">
-            <div class="navbar-div">
-                <ul>
-                    <p>IoT Project</p>   
-                    <li><a class="active" href="/">START PAGE</a></li>
-                    <li><a href="/livedata">LIVE DATA</a></li>
-                    <li><a href="/configuration">CONFIGURATION</a></li>
-                    <li><a href="/rooms">ROOMS</a></li>
-                </ul>
-            </div>
-        </div>
-
-        
-        <!-- PAGE CONTENT -->
-        <div class="content-div">
-            <div>
-                <div id="title_div">
-                    <h1 id="description-title">IoT - Cunning Climate System</h1>
-                </div>
-                <div id="description_div">
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</h3>
-                </div>
-                <div id="login-div">
-                    <form action="/action_page.php" method="post">                   
-                      <div class="container">
-                        <label for="uname"><b>Username</b></label>
-                        <input type="text" placeholder="Enter Username" name="uname" required>
-                    
-                        <label for="psw"><b>Password</b></label>
-                        <input type="password" placeholder="Enter Password" name="psw" required>
-                            
-                        <button type="submit">Login</button>
-                        <label>
-                          <input type="checkbox" checked="checked" name="remember"> Remember me
-                        </label>
-                      </div>
-                    
-                      <div class="container" style="background-color:#f1f1f1">
-                        <button type="button" class="cancelbtn">Cancel</button>
-                        <span class="psw">Forgot <a href="#">password?</a></span>
-                      </div>
-                    </form>
+        <div>
+            <div class="page-content" >
+                    <div class="navbar-div">
+                        <ul>
+                            <p>IoT Project</p>   
+                            <li><a class="active" href="/">Start Page</a></li>
+                            <li><a href="/livedata">Live Data</a></li>
+                            <li><a href="/rooms">Rooms</a></li>
+                        </ul> 
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>   
+        
+                
+                <!-- PAGE CONTENT -->
+                <div class="content-config">
+                    <div style="border-bottom: solid; padding-bottom: 10px;"><font style="margin-left: -400px; font-size: 22px;">Start Page</font></div>
+                        <div style="width: 500px; text-align: left; margin-left: 100px;">
+                            <p>This is an HTTPs server that utilizes basic HTTP authentication.</p>
+                            <p>To interact with the application and to see live data, you need to input your credentials.</p>
+                        </div>
+                        <div style="text-align: center; margin-top: 100px;">
+                           <input id="usn" type="text" placeholder="username"></input><br>
+                           <input id="pwd" type="text" placeholdeR="password"></input><br>
+                           <button onclick="login()">login</button>
+                           <p id="errorMsg"></p>
+                        </div>
+                <div>
+            <div>           
     </body>
+
+    <script>
+        function http(url, httptype, payload) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open(httptype, url, false); 
+            xmlHttp.setRequestHeader('Content-type','application/json; charset=utf-8');
+            response = undefined;
+            xmlHttp.onload = function () {
+                    response =  xmlHttp.status;
+            }
+            xmlHttp.send(payload);
+            return response
+        }
+
+        function login(){
+            username = document.getElementById("usn");
+            password = document.getElementById("pwd");
+
+            response = http("http://127.0.0.1:8000/login", "POST", JSON.stringify({"username":username.value, "password":password.value}));
+            
+            error = document.getElementById("errorMsg");
+            if (response == 401){
+                error.style.color = "red";
+                error.innerHTML = "User Unauthorized."
+            }  else if (response == 200){
+                error.style.color = "green";
+                error.innerHTML = "Success.";
+                username.value = "";
+                password.value = "";
+            }
+        }
+    </script>
 </html>

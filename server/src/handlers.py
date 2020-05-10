@@ -17,9 +17,11 @@ import common, json
 
 class Handler:
 
-    def __init__(self, com:common.Common):    
+    def __init__(self, com:common.Common, users):    
         self.com = com
+        self.users = users
         self.routes = [ 
+            web.post('/login', self.login),
             web.get('/', self.main_page),
             web.get('/configuration', self.config_page),
             web.get('/livedata', self.live_page),
@@ -29,10 +31,22 @@ class Handler:
             web.get('/configuration/sensor/get', self.get_sensors),
             web.get('/configuration/rooms/get', self.get_rooms),
             web.get('/configuration/rooms/get/configuration/{room}', self.get_room_configuration),
+            web.delete('/configuration/rooms/delete/configuration/{room}', self.delete_room),
             web.post('/configuration/sensor/set/room', self.set_sensor_configuration)
 
         ]
         
+    async def login(self, request):
+        payload = await request.json()
+        username = payload['username']
+        print(username)
+        if username not in list(self.users.keys()):
+            return web.Response(status=401) # unauthorized
+        elif username in list(self.users.keys()) and payload['password'] == self.users[username]:
+            return web.Response(status=200) # unauthorized
+        else:
+            return web.Response(status=401)
+
     # this page provides the developer with an overview of the API
     # returns the index.html file fom /static/html
     async def main_page(self, request):
@@ -83,9 +97,15 @@ class Handler:
         return web.Response(text=payload)
 
     async def set_sensor_configuration(self, request):
-
         payload = await request.json()
+        self.com.append_room(payload)
+        # TODO: send data to sensor
+        return web.Response(status=200)
 
-        print(payload)
-        
+    async def delete_room(self, request):
+        room = str(request.match_info.get('room', ''))
+        try:
+            del self.com.rooms[room]
+        except:
+            pass
         return web.Response(status=200)
