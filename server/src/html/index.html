@@ -65,7 +65,7 @@
             error = document.getElementById("errorMsg");
             if (response == 401){
                 error.style.color = "red";
-                error.innerHTML = "User Unauthorized"
+                error.innerHTML = "User unauthorized"
                 setCookie("status", "unauthorized");
             }  else if (response == 200){
                 error.style.color = "green";
