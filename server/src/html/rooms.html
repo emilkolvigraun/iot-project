@@ -73,8 +73,6 @@
         var ventilation = false;
         var amountOfWindows = 0;
 
-
-
         function checkCookie(){
             var cookie = getCookie('autorized');
             if (cookie){
@@ -83,6 +81,7 @@
             } else {
                 $('#roomSelect').attr('disabled', true);
                 $('#inc').attr('disabled', true);
+                location.href = "/";
             }
 
         }
