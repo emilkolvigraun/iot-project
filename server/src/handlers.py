@@ -33,7 +33,6 @@ class Handler:
             web.get('/configuration/rooms/get/configuration/{room}', self.get_room_configuration),
             web.delete('/configuration/rooms/delete/configuration/{room}', self.delete_room),
             web.post('/configuration/sensor/set/room', self.set_sensor_configuration)
-
         ]
         
     async def login(self, request):
