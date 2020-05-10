@@ -6,7 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/style/main.css">
         <link rel="stylesheet" type="text/css" href="/style/configuration.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
 
     <body onload="checkCookie()">
@@ -48,8 +47,8 @@
                             </div>
                             <div class="flex-item" style="text-align: left;">
                                 <div style="margin-top: 21px;">
-                                    <button id="inc" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; margin-right: 5px; background-color: #2ECC71; padding: 0px;" onclick="newRoom()">+</button>
-                                    <button style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: #E74C3C; padding: 0px;" onclick="deleteCurrentRoom()">-</button><br>
+                                    <button id="newRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; margin-right: 5px; background-color: #2ECC71; padding: 0px;" onclick="newRoom()">+</button>
+                                    <button id="deleteRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: #E74C3C; padding: 0px;" onclick="deleteCurrentRoom()">-</button><br>
                                 </div>
                                 <font>Sensor:</font><br>
                                 <input id="sensorSelected" type="text" disabled="disabled" value=""></input><br>
@@ -74,35 +73,36 @@
         var amountOfWindows = 0;
 
         function checkCookie(){
-            var cookie = getCookie('autorized');
-            if (cookie){
-                $('#roomSelect').attr('disabled', false);
-                $('#inc').attr('disabled', false);
-            } else {
-                $('#roomSelect').attr('disabled', true);
-                $('#inc').attr('disabled', true);
-                location.href = "/";
-            }
+            var cookie = getCookie('status');
+            
+            select = document.getElementById("roomSelect")
+            newRoomBtn = document.getElementById("newRoom")
+            deleteRoomBtn = document.getElementById("deleteRoom")
 
+            if (cookie != "authorized"){
+                select.disabled = true;
+                newRoomBtn.disabled = true;
+                deleteRoomBtn.disabled = true;
+                location.href = "/";
+            } else {
+                select.disabled = false;
+                newRoomBtn.disabled = false;
+                deleteRoomBtn.disabled = false;
+            }
         }
 
-        function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for(var i = 0; i <ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
+        function getCookie(cookieKey) {
+            var cookies = document.cookie.toString();
+            cookies = cookies.split(";");
+            for (i = 0; i < cookies.length; i++){
+                cookie = cookies[i].split("=");
+                key = cookie[0];
+                if (key == cookieKey){
+                    return cookie[1];
                 }
             }
             return "";
         }
-
-
 
         function getWindows(){
             image = document.getElementById("roomImage")

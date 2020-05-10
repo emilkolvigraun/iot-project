@@ -75,7 +75,7 @@
                             <div id="window4" style="width: 200px; height: 20px; background-color: #f1f1f1; border: 1px solid black; margin-left: 50px; margin-top: 104px;">
                             </div>
                         </div>
-                        <button style="margin-right: 120px;" onclick="storeRoomData()">save</button>
+                        <button id="saveBtn" style="margin-right: 120px;" onclick="storeRoomData()">save</button>
                         <p style="margin-right: 120px;" style="color: red;" id="errorMsg"></p>
                     </div>
                 <div>
@@ -88,29 +88,32 @@
         var amountOfWindows = 4;
 
         function checkCookie(){
-            var cookie = getCookie('autorized');
-            if (cookie){
-                $('#roomSelect').attr('disabled', false);
-                $('.slider').attr('disabled', false);
-            } else {
-                document.location.href="/";
-                $('#roomSelect').attr('disabled', true);
-                $('.slider').attr('disabled', true);
-            }
+            var cookie = getCookie('status');
+            
+            roomName = document.getElementById("roomName")
+            select = document.getElementById("sensorsSelect")
+            saveBtn = document.getElementById("saveBtn")
 
+            if (cookie != "authorized"){
+                select.disabled = true;
+                roomName.disabled = true;
+                saveBtn.disabled = true;
+                location.href = "/";
+            } else {
+                select.disabled = false;
+                roomName.disabled = false;
+                saveBtn.disabled = false;
+            }
         }
 
-        function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for(var i = 0; i <ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
+        function getCookie(cookieKey) {
+            var cookies = document.cookie.toString();
+            cookies = cookies.split(";");
+            for (i = 0; i < cookies.length; i++){
+                cookie = cookies[i].split("=");
+                key = cookie[0];
+                if (key == cookieKey){
+                    return cookie[1];
                 }
             }
             return "";
