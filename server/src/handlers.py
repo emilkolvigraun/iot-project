@@ -110,7 +110,7 @@ class Handler:
     async def set_sensor_configuration(self, request):
         payload = await request.json()
         self.com.append_room(payload)
-        # TODO: send data to sensor
+        self.com.update(common.PUBLISH, payload['sensor']+'/room/config', json.dumps(payload))
         return web.Response(status=200)
 
     async def delete_room(self, request):
