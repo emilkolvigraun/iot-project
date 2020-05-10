@@ -30,7 +30,7 @@
 
                             <div class="fixed" style="width:49%; text-align: center;">
                                 <font>Room:</font><br>
-                                <select id="roomSelect" onchange="setRoomParams()">
+                                <select id="roomSelect" onchange="renderGraphs()">
                                     <option value="NaN"></option>
                                 </select>
                             </div>
@@ -82,5 +82,72 @@
     humidityGraph.render();
     luxGraph.render();
     ventilationGraph.render();
+
+    function getSelectedOption(sel) {
+        var opt;
+        for ( var i = 0, len = sel.options.length; i < len; i++ ) {
+            opt = sel.options[i];
+            if ( opt.selected === true ) {
+                break;
+            }
+        }
+        return opt;
+    }
+
+    function http(url, httptype, payload) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open(httptype, url, false); 
+        xmlHttp.setRequestHeader('Content-type','application/json; charset=utf-8');
+        response = undefined;
+        xmlHttp.onload = function () {
+                response =  xmlHttp.responseText;
+        }
+        xmlHttp.send(payload);
+        return response
+    }
+
+    function parseStringToList(string){
+        string = string.replace("[", "").replace("]", "");
+        string = string.split("'").join("");
+        return string.split(",");
+    }
+
+    function contains(a, obj) {
+        var i = a.length;
+        while (i--) {
+        if (a[i].trim() === obj.trim()) {
+            return true;
+        }
+        }
+        return false;
+    }
+
+    function updateRoomContent(){
+        rooms = http("http://127.0.0.1:8000/configuration/rooms/get", "GET", null);
+        rooms = parseStringToList(rooms);
+        select = document.getElementById("roomSelect");
+        selection = getSelectedOption(select);
+        if (contains(rooms, selection.value)){
+            select.innerHTML = "<option style="+'"font-weight: bold;"'+"value="+ selection.value +">"+selection.value+"</option>";
+        } else {
+            select.innerHTML = "<option value=NaN></option>";
+        }
+        for (i = 0; i < rooms.length; i++){
+            select.innerHTML += "<option value="+ rooms[i] +">"+ rooms[i] +"</option>";
+        }
+    }
+
+    function renderGraphs(){
+        console.log("render");
+        console.log("send time from and to, to get data");
+    }
+
+    function updateRooms(){
+        updateRoomContent();
+        setTimeout(updateRooms, 1000);
+    }
+
+    updateRooms();
+
     </script>
 </html>
