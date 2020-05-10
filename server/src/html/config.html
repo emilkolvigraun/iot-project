@@ -88,14 +88,11 @@
         var amountOfWindows = 4;
 
         function checkCookie(){
-            var cookie = getCookie('autorized');
+            var cookie = getCookie('authorized');
             if (cookie){
-                $('#roomSelect').attr('disabled', false);
-                $('.slider').attr('disabled', false);
+                return "authorized";
             } else {
                 document.location.href="/";
-                $('#roomSelect').attr('disabled', true);
-                $('.slider').attr('disabled', true);
             }
 
         }
