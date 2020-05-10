@@ -26,6 +26,7 @@ class Handler:
             web.get('/configuration', self.config_page),
             web.get('/livedata', self.live_page),
             web.get('/rooms', self.rooms_page),
+            web.get('/login/username/', self.get_username),
 
             # configuration routes
             web.get('/configuration/sensor/get', self.get_sensors),
@@ -35,6 +36,16 @@ class Handler:
             web.post('/configuration/sensor/set/room', self.set_sensor_configuration)
 
         ]
+
+    async def get_username(self, request):
+        payload = await request.json()
+        username = payload['username']
+
+        if username in list(self.users.keys()):
+            return web.Response(status=200)
+        else:
+            return web.Response(status=401)
+
         
     async def login(self, request):
         payload = await request.json()
