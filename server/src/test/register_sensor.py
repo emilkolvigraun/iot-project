@@ -10,7 +10,8 @@ client.subscribe('TEST_SENSOR/room/config')
 
 try:
     while True: 
-        client.wait(1)
+        client.publish('TEST_SENSOR/temperature', '20')
+        client.wait(2)
 except KeyboardInterrupt:
     client.stop_loop()
     client.disconnect()

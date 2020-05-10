@@ -16,14 +16,17 @@
 
 import paho.mqtt.client as mqtt
 from time import sleep
+from log import Log
+log = Log().log
 
 # Receiver interface, passed to an MQTT client
 class Receiver:
 
     # method must be overwritten
     def on_message(self, client, userdata, message):
+        # default method logs received message
         msg = 'received message: %s, from topic: %s'%(str(message.payload.decode("utf-8")), message.topic)
-        print('DEFAULT_RECEIVER', msg) 
+        log('DEFAULT_RECEIVER', msg) 
 
 # mosquitto client implementation
 class MQTTClient:

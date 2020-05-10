@@ -35,6 +35,7 @@ class Loop(Thread):
 
         while jobs > 0:
             for task in self.com.tasks():
+                print(task)
                 if task[0] == common.PUBLISH:
                     self.mqtt.publish(task[1], task[2])
                 elif task[0] == common.SUBSCRIBE:

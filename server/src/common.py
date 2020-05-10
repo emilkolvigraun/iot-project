@@ -6,8 +6,9 @@ class Common:
 
     sensors: dict = {}
     updates: list = [()]
-
     rooms: dict = {}
+
+    selected_room: str = ''
 
     def __init__(self):
         pass
@@ -30,10 +31,9 @@ class Common:
     def register_sensor(self, key:str):
         if key not in self.sensors.keys():
             self.sensors.update({key:{}})
-
-            self.update(SUBSCRIBE, key+'/temperature')
-            self.update(SUBSCRIBE, key+'/humidity')
-            self.update(SUBSCRIBE, key+'/lux')
+            self.update(PUBLISH, 'archiver/subscribe', key+'/temperature')
+            self.update(PUBLISH, 'archiver/subscribe', key+'/humidity')
+            self.update(PUBLISH, 'archiver/subscribe', key+'/lux')
 
     def stop(self):
         self.updates.clear()
