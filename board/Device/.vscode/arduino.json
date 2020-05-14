@@ -3,5 +3,5 @@
     "sketch": "device.ino",
     "configuration": "PartitionScheme=default,FlashMode=qio,FlashFreq=80,UploadSpeed=921600,DebugLevel=none",
     "output": "./.build",
-    "port": "COM3"
+    "port": "COM13"
 }

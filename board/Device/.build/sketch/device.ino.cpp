@@ -1,91 +1,148 @@
 #include <Arduino.h>
-#line 1 "c:\\Users\\mutten\\Documents\\GitHub\\iot-project\\board\\Device\\device.ino"
+#line 1 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include "src/sensor_manager.h"
+#include <ArduinoJson.h>
+#include "SD.h"
+#include <WiFiUdp.h>
+#include <NTPClient.h> 
 
+#define NTP_OFFSET   0      // In seconds
+#define NTP_INTERVAL 60 * 1000    // In miliseconds
+#define NTP_ADDRESS  "europe.pool.ntp.org"
+
+#define SD_CLK  14
+#define SD_DO   2
+#define SD_DI   15
+#define SD_CS   13 
+
+File configFile;
+StaticJsonDocument<600> configJsonFile;
 
 const char* ssid = "Luke SkyRouter";
 const char* pass = "NT7TVT4WS3HAFX";
 
-const char* mqtt_server_ip = "192.168.1.133";
+const char* mqtt_server_ip = "192.168.1.133"; 
 int port = 1883;
-
-
-
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET, NTP_INTERVAL);
 
-#line 19 "c:\\Users\\mutten\\Documents\\GitHub\\iot-project\\board\\Device\\device.ino"
+String MAC_ADDRESS = "UNSET";
+
+String roomName;
+
+/* initialize sd card connection */
+#line 38 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+bool initSDCard();
+#line 50 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 void setup();
-#line 28 "c:\\Users\\mutten\\Documents\\GitHub\\iot-project\\board\\Device\\device.ino"
-void setup_wifi();
-#line 46 "c:\\Users\\mutten\\Documents\\GitHub\\iot-project\\board\\Device\\device.ino"
+#line 82 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+void initialize_wifi();
+#line 93 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 void callback(char* topic, byte* message, unsigned int length);
-#line 55 "c:\\Users\\mutten\\Documents\\GitHub\\iot-project\\board\\Device\\device.ino"
+#line 114 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 void reconnect();
-#line 75 "c:\\Users\\mutten\\Documents\\GitHub\\iot-project\\board\\Device\\device.ino"
+#line 129 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 void loop();
-#line 19 "c:\\Users\\mutten\\Documents\\GitHub\\iot-project\\board\\Device\\device.ino"
-void setup(){
-  Serial.begin(9600);
-  initialize_sensors();
+#line 38 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+bool initSDCard(){
 
-  setup_wifi();
-  client.setServer(mqtt_server_ip, port);
-  client.setCallback(callback);
+  // Initialize SD card
+  SPI.begin(SD_CLK, SD_DO, SD_DI, SD_CS);
+  if(!SD.begin(SD_CS)){
+    Serial.println("Boot failed...");
+    return false;
+  }
+
+  return true;
 }
 
-void setup_wifi(){
-  Serial.println("");
-  Serial.println("Connecting to: ");
-  Serial.println(ssid);
+void setup(){
+  Serial.begin(9600);
+  
+  // init sd card
+  bool success = initSDCard();
+
+  if (success){
+    configFile = SD.open("config.json", FILE_WRITE);
+    Serial.println("opened file");
+  }
+
+  // Connect to WiFi
+  initialize_wifi();
+
+  
+  timeClient.begin();
+
+  //initialize sensors
+  initialize_sensors();
+
+  // Setup MQTT configurations
+  client.setServer(mqtt_server_ip, port);
+  client.setCallback(callback);
+
+  if (!client.connected()) {
+    reconnect();
+  }
+
+  client.publish("sensor/registration", (MAC_ADDRESS+"/temperature").c_str());
+  
+}
+
+void initialize_wifi(){
 
   WiFi.begin(ssid, pass);
 
-  while(WiFi.status() != WL_CONNECTED){
+  while(WiFi.status() != WL_CONNECTED){ 
     delay(500);
-    Serial.print(".");
   }
 
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+  MAC_ADDRESS = WiFi.macAddress();
 }
 
 void callback(char* topic, byte* message, unsigned int length) {
-  Serial.print("Message arrived on topic: ");
-  Serial.println(topic);
-  String myString = String((char*)message);
-  Serial.println(myString);
-}
+  char payload[length];
+  for (int i=0;i<length;i++)
+  {
+    payload[i] = (char)message[i];
+  }
+  DeserializationError error = deserializeJson(configJsonFile, payload);
 
+  // Test if parsing succeeds.
+  if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.c_str());
+    return;
+  }
+
+  const char* room = configJsonFile["room"];
+  roomName = room;
+  Serial.println(roomName);
+}
 
 
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Attempt to connect
-    if (client.connect("esp32_2")) {
-      Serial.println("connected");
-      client.subscribe("time/sync/current");
 
+    // Attempt to connect
+    if (client.connect(MAC_ADDRESS.c_str())) {
+      client.subscribe((MAC_ADDRESS+"/room/config").c_str());
     } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
-      delay(5000);
+      delay(1000);
     }
   }
 }
 
 
 void loop(){
+  timeClient.update();
   if (!client.connected()) {
     reconnect();
   }
@@ -95,22 +152,6 @@ void loop(){
   String lightSensor = (String) get_ambientLight();
   String humiditySensor = (String) get_humidity();
 
-  Serial.println(tempSensor);
   
-  
-  char tempBuf[tempSensor.length() + 1];
-  tempSensor.toCharArray(tempBuf,tempSensor.length() + 1);
-
-  char lightBuf[lightSensor.length() + 1];
-  lightSensor.toCharArray(lightBuf,lightSensor.length() + 1);
-
-  char humBuf[humiditySensor.length() + 1];
-  humiditySensor.toCharArray(humBuf,humiditySensor.length() + 1);
-
-  // Publish
-  client.publish("sensor/registration", tempBuf);
-  client.publish("sensor/registration", lightBuf);
-  client.publish("sensor/registration", humBuf);
-  delay(500);
-  
-}
+  unsigned long epochTime = timeClient.getEpochTime();
+} 

@@ -2,25 +2,17 @@
 #include <math.h>
 #include "driver/i2c.h"
 
-
 #include "sensors/hts221.h"
 #include "sensors/bh1750.h"
-
 
 #define I2C_MASTER_SCL_IO 26        /*!< gpio number for I2C master clock */
 #define I2C_MASTER_SDA_IO 25        /*!< gpio number for I2C master data  */
 #define I2C_MASTER_FREQ_HZ 100000   /*!< I2C master clock frequency */
 
-
 static i2c_bus_handle_t i2c_bus = NULL;
 static hts221_handle_t hts221 = NULL;
 static bh1750_handle_t bh1750 = NULL;
 
-
-
-static int last_x;
-static int last_y;
-static int last_z;
 /**
  * @brief i2c master initialization
  */
