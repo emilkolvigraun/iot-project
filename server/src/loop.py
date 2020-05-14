@@ -23,7 +23,7 @@ class Loop(Thread):
     com: common.Common = common.Common()
     mqtt: MQTTClient = MQTTClient(MessageReceiver(com), 'HTTPLooper')
 
-    def __init__(self, config, loop_time:float=1.0/60):
+    def __init__(self, config):
         self.mqtt.start_loop()
         for topic in config['topics']['subscribe']:
             self.mqtt.subscribe(topic)
@@ -35,7 +35,7 @@ class Loop(Thread):
 
         while jobs > 0:
             for task in self.com.tasks():
-                print(task)
+
                 if task[0] == common.PUBLISH:
                     self.mqtt.publish(task[1], task[2])
                 elif task[0] == common.SUBSCRIBE:

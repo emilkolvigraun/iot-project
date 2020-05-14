@@ -1,3 +1,4 @@
+import json
 
 PUBLISH: int = 0
 SUBSCRIBE: int = 1
@@ -11,7 +12,13 @@ class Common:
     selected_room: str = ''
 
     def __init__(self):
-        pass
+        try:
+            with open('../etc/rooms.json') as cf:
+                self.rooms = json.loads(''.join(cf.readlines()))
+            with open('../etc/sensors.json') as cf:
+                self.sensors = json.loads(''.join(cf.readlines()))
+        except:
+            pass
 
     def update(self, action:int, topic:str, data:str=None):
         self.updates.append((action, topic, data))
@@ -28,12 +35,17 @@ class Common:
         self.updates = [self.updates[0]]
         return tasks
 
-    def register_sensor(self, key:str):
+    def register_sensor(self, msg:str):
+        self.update_sensors(msg.split('/')[0])
+        self.update(PUBLISH, 'archiver/subscribe', msg)
+
+    def update_sensors(self, key:str):
         if key not in self.sensors.keys():
             self.sensors.update({key:{}})
-            self.update(PUBLISH, 'archiver/subscribe', key+'/temperature')
-            self.update(PUBLISH, 'archiver/subscribe', key+'/humidity')
-            self.update(PUBLISH, 'archiver/subscribe', key+'/lux')
+            
+            with open('../etc/sensors.json', 'w') as cf:
+                cf.write(json.dumps(self.sensors))
+
 
     def stop(self):
         self.updates.clear()
@@ -51,3 +63,7 @@ class Common:
             'tDay': room['tDay'],
             'tNight': room['tNight'],
             'ventilation': room['ventilation']}})
+
+        print(self.rooms)
+        with open('../etc/rooms.json', 'w') as cf:
+            cf.write(json.dumps(self.rooms))

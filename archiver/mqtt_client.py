@@ -28,11 +28,14 @@ class Receiver:
         msg = 'received message: %s, from topic: %s'%(str(message.payload.decode("utf-8")), message.topic)
         log('DEFAULT_RECEIVER', msg) 
 
+    def get_subs(self):
+        return ''
+
 # mosquitto client implementation
 class MQTTClient:
 
     # TODO: read the settings from a configuration file
-    broker_address: str = '127.0.0.1'
+    broker_address: str = '192.168.1.133'
     broker_port: int = 1883
 
     # initialize mqtt client details
@@ -46,13 +49,16 @@ class MQTTClient:
             self.client = mqtt.Client(self.client_id)
 
         # the receiver is now in global class scope
-        self.receiver = receiver
-
+        self.receiver = receiver()
+        
         # connects to the broker on init
         self.client.connect(self.broker_address, port=self.broker_port)
 
         # configures on message binding
         self.client.on_message = self.receiver.on_message
+
+        for sub in self.receiver.get_subs():
+            self.client.subscribe(sub)
 
     def start_loop(self):
         # this will create a new background thread

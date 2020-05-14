@@ -2,27 +2,32 @@ import sqlite3 as sql
 
 class Database:
 
-    database: sql.connect = sql.connect('archive.db')
+    def create(self, table:str):
+        with sql.connect('archive.db') as con:
+            cursor = con.cursor()
+            cursor.execute("CREATE TABLE '"+table+"' (time, datatype, value)")
+            con.commit()
 
-    def __init__(self):
-        self.cursor = self.database.cursor()
+    def insert(self, table:str, time:str, datatype:str, value:str):
+        with sql.connect('archive.db') as con:
+            cursor = con.cursor()
+            cursor.execute("INSERT INTO '"+table+"' VALUES ("+time+", '"+datatype+"' ,"+value+")")
+            con.commit()
 
-    def create(self, room:str, datatype:str):
-        self.cursor.execute("CREATE TABLE "+room+"_"+datatype+" (time,sensor,value)")
-        self.cursor.commit()
+    def get_where(self, from_date, to_date, table:str):
+        with sql.connect('archive.db') as con:
+            cursor = con.cursor()
+            cursor.execute("SELECT value,datatype FROM '"+table+"' WHERE time>="+from_date+" AND time <="+to_date+" ORDER BY time ASC")
+            con.commit()
+            return cursor.fetchall()
 
-    def insert(self, room:str, datatype:str, sensor:str, value:str, time:str):
-        self.cursor.execute("INSERT INTO"+room+"_"+datatype+" VALUES ("+time+","+sensor+","+value+")")
-        self.cursor.commit()
+    def table_exists(self, table:str):
+        with sql.connect('archive.db') as con:
+            cursor = con.cursor()
+            cursor.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='"+table+"'")
 
-    def get_where(self, from_date, to_date, room:str, datatype:str, sensor:str):
-        self.cursor.execute("SELECT value FROM "+room+"_"+datatype+"WHERE sensor=? AND time>=? AND time <=?", (sensor, from_date, to_date, ))
-
-    def table_exists(self, room:str, datatype:str):
-        self.cursor.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='"+room+"_"+datatype+"'")
-
-        #if the count is 1, then table exists
-        if self.cursor.fetchone()[0]==1 : 
-            return True
-        return False
+            #if the count is 1, then table exists
+            if cursor.fetchone()[0]>0 : 
+                return True
+            return False
         
