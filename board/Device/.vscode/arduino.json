@@ -1,6 +1,7 @@
 {
-    "board": "esp32:esp32:m5stack-core-esp32",
+    "board": "esp32:esp32:esp32wrover",
     "sketch": "device.ino",
-    "configuration": "FlashMode=qio,FlashFreq=80,UploadSpeed=921600,DebugLevel=none",
-    "output": "./.build"
+    "configuration": "PartitionScheme=default,FlashMode=qio,FlashFreq=80,UploadSpeed=921600,DebugLevel=none",
+    "output": "./.build",
+    "port": "COM3"
 }

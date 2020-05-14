@@ -9,7 +9,8 @@ const char* pass = "NT7TVT4WS3HAFX";
 const char* mqtt_server_ip = "192.168.1.133";
 int port = 1883;
 
-unsigned long time;
+
+
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -17,11 +18,11 @@ PubSubClient client(espClient);
 
 void setup(){
   Serial.begin(9600);
+  initialize_sensors();
 
   setup_wifi();
   client.setServer(mqtt_server_ip, port);
   client.setCallback(callback);
-  
 }
 
 void setup_wifi(){
@@ -44,9 +45,11 @@ void setup_wifi(){
 
 void callback(char* topic, byte* message, unsigned int length) {
   Serial.print("Message arrived on topic: ");
-  Serial.print(topic);
-  Serial.println(message);
+  Serial.println(topic);
+  String myString = String((char*)message);
+  Serial.println(myString);
 }
+
 
 
 void reconnect() {
@@ -54,9 +57,9 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("esp32")) {
+    if (client.connect("esp32_2")) {
       Serial.println("connected");
-      client.subscribe("time/sync/current")
+      client.subscribe("time/sync/current");
 
     } else {
       Serial.print("failed, rc=");
@@ -79,10 +82,22 @@ void loop(){
   String lightSensor = (String) get_ambientLight();
   String humiditySensor = (String) get_humidity();
 
-      // Publish
-    client.publish("sensor/registration", "fuck");
-    client.publish("sensor/registration", "dig");
-    client.publish("sensor/registration", "emil");
-    delay(500);
+  Serial.println(tempSensor);
+  
+  
+  char tempBuf[tempSensor.length() + 1];
+  tempSensor.toCharArray(tempBuf,tempSensor.length() + 1);
+
+  char lightBuf[lightSensor.length() + 1];
+  lightSensor.toCharArray(lightBuf,lightSensor.length() + 1);
+
+  char humBuf[humiditySensor.length() + 1];
+  humiditySensor.toCharArray(humBuf,humiditySensor.length() + 1);
+
+  // Publish
+  client.publish("sensor/registration", tempBuf);
+  client.publish("sensor/registration", lightBuf);
+  client.publish("sensor/registration", humBuf);
+  delay(500);
   
 }
