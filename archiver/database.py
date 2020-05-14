@@ -5,19 +5,19 @@ class Database:
     def create(self, table:str):
         with sql.connect('archive.db') as con:
             cursor = con.cursor()
-            cursor.execute("CREATE TABLE '"+table+"' (time, datatype, value)")
+            cursor.execute("CREATE TABLE '"+table+"' (time_send, datatype, value, time_received)")
             con.commit()
 
-    def insert(self, table:str, time:str, datatype:str, value:str):
+    def insert(self, table:str, time:str, datatype:str, value:str, received:str):
         with sql.connect('archive.db') as con:
             cursor = con.cursor()
-            cursor.execute("INSERT INTO '"+table+"' VALUES ("+time+", '"+datatype+"' ,"+value+")")
+            cursor.execute("INSERT INTO '"+table+"' VALUES ( "+time+", '"+datatype+"' ,"+value+", "+received+")")
             con.commit()
 
     def get_where(self, from_date, to_date, table:str):
         with sql.connect('archive.db') as con:
             cursor = con.cursor()
-            cursor.execute("SELECT value,datatype FROM '"+table+"' WHERE time>="+from_date+" AND time <="+to_date+" ORDER BY time ASC")
+            cursor.execute("SELECT value,datatype FROM '"+table+"' WHERE time_send>="+from_date+" AND time_send <="+to_date+" ORDER BY time_send ASC")
             con.commit()
             return cursor.fetchall()
 

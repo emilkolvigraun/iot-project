@@ -1,7 +1,7 @@
 
 from mqtt_client import Receiver, MQTTClient
 from database import Database
-import json
+import json, time
 
 class StorageEngine(Receiver):
 
@@ -26,6 +26,7 @@ class StorageEngine(Receiver):
                 f.write(json.dumps({'subscriptions':self.subs}))
 
     def on_message(self, client, userdata, message):
+        received = str(time.time())
         msg = str(message.payload.decode("utf-8"))
 
         if message.topic == 'archiver/subscribe':
@@ -65,7 +66,7 @@ class StorageEngine(Receiver):
                 if not self.db.table_exists(table):
                     self.db.create(table)
                 else: 
-                    self.db.insert(table, debunked_message[2], debunked_topic[1], debunked_message[0])
+                    self.db.insert(table, debunked_message[2], debunked_topic[1], debunked_message[0], received)
             except Exception as e:
                 print(e)
 

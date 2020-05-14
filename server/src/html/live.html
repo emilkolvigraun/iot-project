@@ -322,16 +322,19 @@
 
     function updateFromPeriod(value){
         document.getElementById("fromPeriod").innerHTML = timeConverter(value);
+        renderGraphs();
     }
 
     function updateToPeriod(value){
+        console.log('updating');
         if (value > Date.now()/1000){
             document.getElementById("toPeriod").innerHTML = "continuous";
             renderGraphs();
             continuous = true;
         } else {
-            continuous = false;
             document.getElementById("toPeriod").innerHTML = timeConverter(value);
+            renderGraphs();
+            continuous = false;
         }
     }
     document.getElementById("fromPeriodSlider").min = 1589109534.227;
