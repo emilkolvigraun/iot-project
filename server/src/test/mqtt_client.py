@@ -29,7 +29,7 @@ class Receiver:
 class MQTTClient:
 
     # TODO: read the settings from a configuration file
-    broker_address: str = '192.168.1.133'
+    broker_address: str = '127.0.0.1'
     broker_port: int = 1883
 
     # initialize mqtt client details

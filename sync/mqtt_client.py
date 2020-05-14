@@ -16,8 +16,6 @@
 
 import paho.mqtt.client as mqtt
 from time import sleep
-from log import Log
-log = Log().log
 
 # Receiver interface, passed to an MQTT client
 class Receiver:
@@ -26,27 +24,27 @@ class Receiver:
     def on_message(self, client, userdata, message):
         # default method logs received message
         msg = 'received message: %s, from topic: %s'%(str(message.payload.decode("utf-8")), message.topic)
-        log('DEFAULT_RECEIVER', msg) 
+        print('DEFAULT_RECEIVER', msg) 
 
 # mosquitto client implementation
 class MQTTClient:
 
     # TODO: read the settings from a configuration file
-    broker_address: str = '192.168.1.133'
+    broker_address: str = '127.0.0.1'
     broker_port: int = 1883
 
     # initialize mqtt client details
-    client_id: str = 'debug'
+    client_id: str = 'TimeSynchModule'
     client: mqtt.Client = mqtt.Client(client_id)
 
-    def __init__(self, receiver:Receiver, client_id:str=None):
+    def __init__(self, receiver:Receiver=Receiver, client_id:str=None):
 
         if client_id is not None:
             self.client_id = client_id
             self.client = mqtt.Client(self.client_id)
 
         # the receiver is now in global class scope
-        self.receiver = receiver
+        self.receiver = receiver()
 
         # connects to the broker on init
         self.client.connect(self.broker_address, port=self.broker_port)
