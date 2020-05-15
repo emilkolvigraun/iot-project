@@ -54,8 +54,8 @@ class Common:
         name = room['room']
 
         remove_keys = []
-        for key in list(self.rooms.keys()) :
-            if (room['sensor'] == self.rooms[key]['sensor']):
+        for key in list(self.rooms.keys()):
+            if room['sensor'] == self.rooms[key]['sensor']:
                 remove_keys += [key]
         
         for key in remove_keys:
@@ -78,4 +78,12 @@ class Common:
             cf.write(json.dumps(self.rooms))
 
     def update_setpoint(self, payload:dict):
-        pass
+        sensor = payload['sensor']
+        for key in list(self.rooms.keys()):
+            if sensor == self.rooms[key]['sensor']:
+                
+                day = payload['time']
+                if day == "day":
+                    self.rooms[key]['tDay'] = int(payload['setpoint'])
+                elif day == "night":
+                    self.rooms[key]['tNight'] = int(payload['setpoint'])

@@ -34,13 +34,14 @@
                                     <option value="NaN"></option>
                                 </select><br>
                                 <font>Current setpoint:</font><font id="currentSetpoint"></font><br>
-                                <div style="margin-top: 21px;">
-                                    <button id="newRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; margin-right: 5px; background-color: #2ECC71; padding: 0px;" onclick="newRoom()">+</button>
-                                    <button id="deleteRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: #E74C3C; padding: 0px;" onclick="deleteCurrentRoom()">-</button><br>
-                                    <button id="deleteRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: rgb(60, 63, 231); padding: 0px;" onclick="updateSetpointRoom()"><i style="font-size:22px" class="fa">&#xf021;</i></button><br>
+                                <div style="margin-top: 7px;">
+                                    <button id="newRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; margin-right: 5px; background-color: #2ECC71; padding: 0px;" onclick="increaseSetpoint()">+</button>
+                                    <button id="deleteRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: #E74C3C; padding: 0px;" onclick="decreaseSetpoint()">-</button>
+                                    <button id="deleteRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: rgb(52, 152, 219); padding: 0px;" onclick="updateSetpointRoom()"><i style="font-size:22px" class="fa">&#xf021;</i></button><br>
                                 </div>
                             </div>
                             <div class="flex-item" style="width:49%; text-align: center;">
+                                <div style="width:100%; height:30px;"></div>
                                 <font>Time period:</font><br>
                                 <input type="range" min="1" max="1000" value="0" class="slider" id="fromPeriodSlider" style="width: 90%;" onchange="updateFromPeriod(this.value)"></input>
                                 <input type="range" min="1" max="1000" value="1000" class="slider" id="toPeriodSlider" style="width: 90%;" onchange="updateToPeriod(this.value)"></input>
@@ -62,6 +63,9 @@
         var continuous = false;
         var returnTopic = create_UUID();
         var table = '';
+        var currentSensorSelection = '';
+        var currentSetpointValue = 0;
+        var time = '';
 
         function initialize(){
             connectClient();
@@ -292,6 +296,58 @@
         for (i = 0; i < rooms.length; i++){
             select.innerHTML += "<option value="+ rooms[i] +">"+ rooms[i] +"</option>";
         }
+
+        updateSetpointFromRoomSelection();
+    }
+
+    function increaseSetpoint(){
+        currentSetpointValue += 1;
+        updateCurrentSetpointLabel(currentSetpointValue);
+    }
+
+    function decreaseSetpoint(){
+        currentSetpointValue -= 1;
+        updateCurrentSetpointLabel(currentSetpointValue);
+    }
+
+    function updateSetpointRoom(){
+        http("http://192.168.1.133:8000/configuration/room/setpoint/update", "POST", JSON.stringify({"sensor":currentSensorSelection, "setpoint":currentSetpointValue, "time":time}))
+    }
+
+    function updateCurrentSetpointLabel(value){
+        setpoint = document.getElementById("currentSetpoint");
+        setpoint.innerHTML = value + "℃";
+    }
+
+    function updateSetpointFromRoomSelection(){
+        setpoint = document.getElementById("currentSetpoint");
+        select = document.getElementById("roomSelect");
+        selection = getSelectedOption(select).value;
+
+        if (selection.length < 1){
+            updateCurrentSetpointLabel("NaN");
+            return;
+        }
+
+        params = http("http://192.168.1.133:8000/configuration/rooms/get/configuration/"+selection, "GET", null);
+        params = JSON.parse(params);
+        
+        currentSensorSelection = document.getElementById("sensorSelected").value = params["sensor"];
+        Tday = document.getElementById("setpointDay").value = params["tDay"];
+        Tnight = document.getElementById("setpointNight").value = params["tNight"];
+        
+        currentSetpointValue = getCurrentSetpoint(Tday, Tnight);
+        updateCurrentSetpointLabel(currentSetpointValue);
+    }
+
+    function getCurrentSetpoint(Tday, Tnight){
+        hour = new Date().getHours();
+        if (hour > 6 && hour < 21){
+            time = "day";
+            return Tday;
+        }
+        time = "night";
+        return Tnight;
     }
 
     function renderGraphs(){
