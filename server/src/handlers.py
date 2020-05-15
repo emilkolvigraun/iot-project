@@ -104,6 +104,7 @@ class Handler:
         room = str(request.match_info.get('room', ''))
         try:
             del self.com.rooms[room]
+            self.com.write_rooms()
         except:
             pass
         return web.Response(status=200)
