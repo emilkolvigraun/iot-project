@@ -261,6 +261,16 @@
             return string.split(",");
         }
 
+        function contains(a, obj) {
+            var i = a.length;
+            while (i--) {
+            if (a[i].trim() === obj.trim()) {
+                return true;
+            }
+            }
+            return false;
+        }
+
         function getSensors(){
             sensors = http("http://192.168.1.133:8000/configuration/sensor/get", "GET", null);
             return parseStringToList(sensors);
