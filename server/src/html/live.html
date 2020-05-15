@@ -33,10 +33,10 @@
                                 <select id="roomSelect" onchange="renderGraphs()">
                                     <option value="NaN"></option>
                                 </select><br>
-                                <font>Current setpoint:</font><font id="currentSetpoint"></font><br>
+                                <font>Current setpoint: </font><font id="currentSetpoint" style="font-size: 22px; font-weight: bold;"></font><br>
                                 <div style="margin-top: 7px;">
                                     <button id="newRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; margin-right: 5px; background-color: #2ECC71; padding: 0px;" onclick="increaseSetpoint()">+</button>
-                                    <button id="deleteRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: #E74C3C; padding: 0px;" onclick="decreaseSetpoint()">-</button>
+                                    <button id="deleteRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; margin-right: 5px; background-color: #E74C3C; padding: 0px;" onclick="decreaseSetpoint()">-</button>
                                     <button id="deleteRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: rgb(52, 152, 219); padding: 0px;" onclick="updateSetpointRoom()"><i style="font-size:22px" class="fa">&#xf021;</i></button><br>
                                 </div>
                             </div>

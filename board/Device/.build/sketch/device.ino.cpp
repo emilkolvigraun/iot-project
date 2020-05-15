@@ -387,7 +387,7 @@ void loop(){
 
       client.publish((MAC_ADDRESS+"/temperature").c_str(), tStr.c_str());
       client.publish((MAC_ADDRESS+"/humidity").c_str(), hStr.c_str());
-      client.publish((MAC_ADDRESS+"/light").c_str(), lStr.c_str());
+      client.publish((MAC_ADDRESS+"/lux").c_str(), lStr.c_str());
       client.publish((MAC_ADDRESS+"/ventilation").c_str(), vStr.c_str());
     }
     Serial.print("Update time: ");
