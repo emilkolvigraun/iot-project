@@ -296,8 +296,6 @@
         for (i = 0; i < rooms.length; i++){
             select.innerHTML += "<option value="+ rooms[i] +">"+ rooms[i] +"</option>";
         }
-
-        updateSetpointFromRoomSelection();
     }
 
     function increaseSetpoint(){
@@ -319,23 +317,7 @@
         setpoint.innerHTML = value + "℃";
     }
 
-    function updateSetpointFromRoomSelection(){
-        setpoint = document.getElementById("currentSetpoint");
-        select = document.getElementById("roomSelect");
-        selection = getSelectedOption(select).value;
-
-        if (selection.length < 1){
-            updateCurrentSetpointLabel("NaN");
-            return;
-        }
-
-        params = http("http://192.168.1.133:8000/configuration/rooms/get/configuration/"+selection, "GET", null);
-        params = JSON.parse(params);
-        
-        currentSensorSelection = document.getElementById("sensorSelected").value = params["sensor"];
-        Tday = document.getElementById("setpointDay").value = params["tDay"];
-        Tnight = document.getElementById("setpointNight").value = params["tNight"];
-        
+    function updateSetpointFromRoomSelection(Tday, Tnight){
         currentSetpointValue = getCurrentSetpoint(Tday, Tnight);
         updateCurrentSetpointLabel(currentSetpointValue);
     }
@@ -364,11 +346,14 @@
             from = convertToUnix(document.getElementById("fromPeriod").innerHTML);
             to   = convertToUnix(document.getElementById("toPeriod").innerHTML);
             
+            currentSensorSelection = document.getElementById("sensorSelected").value = params["sensor"];
             client.subscribe(returnTopic);
-            table = room+"_"+payload['sensor'];
+            table = room+"_"+currentSensorSelection;
             message = new Paho.MQTT.Message(table+","+from+","+to+","+returnTopic);
             message.destinationName = "archiver/get";
             client.send(message);
+            
+            updateSetpointFromRoomSelection(params["tDay"], params["tNight"]);
         }
     }
 
