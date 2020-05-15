@@ -56,7 +56,7 @@ float ventilationEffect = 0;
 
 /* initialize sd card connection */
 bool initSDCard(){
-
+  Serial.println("Trying to load SD card.");
   // Initialize SD card
   SPI.begin(SD_CLK, SD_DO, SD_DI, SD_CS);
   if(!SD.begin(SD_CS)){
@@ -64,6 +64,7 @@ bool initSDCard(){
     return false;
   }
 
+  Serial.println("SD card loaded.");
   uint8_t cardType = SD.cardType();
   Serial.print("SD Card Type: ");
   if(cardType == CARD_MMC){
@@ -84,6 +85,7 @@ void setup(){
   Serial.begin(9600);
 
   Serial.println("");
+  Serial.println("Booting...");
   
   if (initSDCard()){
 
@@ -106,6 +108,7 @@ void setup(){
 
     if (i > 50){
       encodeToJson(content);
+      Serial.println("Loaded configurations.");
     }
 
     configFile.close();
@@ -116,34 +119,38 @@ void setup(){
 
   // Connect to WiFi
   initialize_wifi();
+  Serial.println("Initialized WiFi.");
 
   timeNTPClient.begin();
 
   //initialize sensors
   initialize_sensors();
+  Serial.println("Initialized sensors.");
 
   // Setup MQTT configurations
   client.setServer(mqtt_server_ip, port);
   client.setCallback(onMessageReceived);  
 
+  
   if (!client.connected()) {
-    Serial.println("Reconnecting...");
     reconnect();
   }
+  Serial.println("Initialized MQTT client.");
 
   client.publish("sensor/registration", (MAC_ADDRESS+"/temperature").c_str());
   client.publish("sensor/registration", (MAC_ADDRESS+"/humidity").c_str());
   client.publish("sensor/registration", (MAC_ADDRESS+"/lux").c_str());
   client.publish("sensor/registration", (MAC_ADDRESS+"/ventilation").c_str());
+
+  Serial.println("Registered sensor.");
+  Serial.println("Boot complete.");
 }
 
 void writeToConfigFile(char* payload){
 
   if (SD.exists("/config.txt")) {
     SD.remove("/config.txt");
-  } else {
-    Serial.println("/config.txt doesn't exist.");
-  }
+  } 
 
   configFile = SD.open("/config.txt", FILE_WRITE);
   if (configFile){
@@ -171,17 +178,15 @@ void onMessageReceived(char* topic, byte* message, unsigned int length) {
   {
     payload[i] = (char)message[i];
   }  
-  Serial.print("Received from topic: ");
   if (((String) topic) == (MAC_ADDRESS+"/room/config")){
-    Serial.println("room/config");
     if (SD_CARD_AVAILABLE){
       writeToConfigFile(payload);
     }
     encodeToJson(payload);
-    Serial.println("Loaded new config.");
+    Serial.println("Stored new configurations.");
   } else if (((String) topic) == (MAC_ADDRESS+"/setpoint")){
-    Serial.println("ADJUST CURRENT SETPOINT!");
     updateRelevantSetpoint(payload);
+    Serial.println("Updated relevant setpoint.");
   }
 }
 
@@ -313,7 +318,6 @@ void loop(){
   timeNTPClient.update();
 
   if (!client.connected()) {
-    Serial.println("Reconnecting...");
     reconnect();
   }
   client.loop();
@@ -341,8 +345,21 @@ void loop(){
         temperature += effect;
       } 
 
-      unsigned long currentTime = timeNTPClient.getEpochTime();      
+      unsigned long currentTime = timeNTPClient.getEpochTime();  
+
+      String tStr = ((String) temperature)+","+roomName+","+((String)currentTime);    
+      String hStr = humidity+","+roomName+","+((String)currentTime);    
+      String lStr = light+","+roomName+","+((String)currentTime);    
+      String vStr = ((String) ventilationWattage)+","+roomName+","+((String)currentTime);    
+
+      client.publish((MAC_ADDRESS+"/temperature").c_str(), tStr.c_str());
+      client.publish((MAC_ADDRESS+"/humidity").c_str(), hStr.c_str());
+      client.publish((MAC_ADDRESS+"/light").c_str(), lStr.c_str());
+      client.publish((MAC_ADDRESS+"/ventilation").c_str(), vStr.c_str());
     }
+    Serial.print("Update time: ");
+    Serial.print(t1);
+    Serial.println(" seconds.");
     unsigned long t2 = timeNTPClient.getEpochTime();
     lastUpdate = t2 - (t0 - t2);
   }

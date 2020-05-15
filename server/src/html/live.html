@@ -318,7 +318,7 @@
     }
 
     function updateSetpointFromRoomSelection(Tday, Tnight){
-        currentSetpointValue = getCurrentSetpoint(Tday, Tnight);
+        currentSetpointValue = parseInt(getCurrentSetpoint(Tday, Tnight));
         console.log("currentSetpointValue " + currentSetpointValue);
         updateCurrentSetpointLabel(currentSetpointValue);
     }
