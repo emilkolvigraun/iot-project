@@ -7,6 +7,8 @@
 # 7 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino" 2
 # 8 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino" 2
 
+#define MQTT_MAX_PACKET_SIZE 300
+
 #define NTP_OFFSET 0 /* In seconds*/
 #define NTP_INTERVAL 60 * 1000 /* In miliseconds*/
 #define NTP_ADDRESS "europe.pool.ntp.org"
@@ -29,7 +31,7 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 0 /* In seconds*/, 60 * 1000 /* In miliseconds*/);
+NTPClient timeNTPClient(ntpUDP, "europe.pool.ntp.org", 0 /* In seconds*/, 60 * 1000 /* In miliseconds*/);
 
 String MAC_ADDRESS = "UNSET";
 
@@ -51,19 +53,14 @@ bool initSDCard(){
 void setup(){
   Serial.begin(9600);
 
-  // init sd card
-  bool success = initSDCard();
-
-  if (success){
+  if (initSDCard()){
     configFile = SD.open("config.json", "w");
-    Serial.println("opened file");
   }
 
   // Connect to WiFi
   initialize_wifi();
 
-
-  timeClient.begin();
+  timeNTPClient.begin();
 
   //initialize sensors
   initialize_sensors();
@@ -88,21 +85,23 @@ void initialize_wifi(){
     delay(500);
   }
 
-  MAC_ADDRESS = WiFi.macAddress();
+  MAC_ADDRESS = "esp32"; //WiFi.macAddress();
 }
 
 void callback(char* topic, byte* message, unsigned int length) {
+  Serial.println("CALLED");
+  Serial.print("FROM TOPIC: ");
+  Serial.println(topic);
+
   char payload[length];
   for (int i=0;i<length;i++)
   {
     payload[i] = (char)message[i];
   }
-  DeserializationError error = deserializeJson(configJsonFile, payload);
-
+  Serial.println(payload);
   // Test if parsing succeeds.
-  if (error) {
-    Serial.print(((reinterpret_cast<const __FlashStringHelper *>(("deserializeJson() failed: ")))));
-    Serial.println(error.c_str());
+  if (deserializeJson(configJsonFile, payload)) {
+    Serial.println("error?");
     return;
   }
 
@@ -118,6 +117,7 @@ void reconnect() {
 
     // Attempt to connect
     if (client.connect(MAC_ADDRESS.c_str())) {
+      Serial.println(("Subscribed to: "+MAC_ADDRESS+"/room/config").c_str());
       client.subscribe((MAC_ADDRESS+"/room/config").c_str());
     } else {
       // Wait 5 seconds before retrying
@@ -128,16 +128,17 @@ void reconnect() {
 
 
 void loop(){
-  timeClient.update();
+  timeNTPClient.update();
+
   if (!client.connected()) {
+    Serial.println("Reconnecting...");
     reconnect();
   }
+
   client.loop();
 
   String tempSensor = (String) get_temperature();
   String lightSensor = (String) get_ambientLight();
   String humiditySensor = (String) get_humidity();
-
-
-  unsigned long epochTime = timeClient.getEpochTime();
+  unsigned long epochTime = timeNTPClient.getEpochTime();
 }
