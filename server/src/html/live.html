@@ -335,7 +335,7 @@
     function renderGraphs(){
         room    = document.getElementById("roomSelect");
         room    = getSelectedOption(room).value;
-        if (room != 'NaN'){
+        if (room != 'NaN' && room.lengt > 0 && room != null){
             while ( temperatureData.length > 0) { temperatureData.pop(); }
             while ( luxData.length > 0) { luxData.pop(); }
             while ( humidityData.length > 0) { humidityData.pop(); }
@@ -346,14 +346,14 @@
             from = convertToUnix(document.getElementById("fromPeriod").innerHTML);
             to   = convertToUnix(document.getElementById("toPeriod").innerHTML);
             
-            currentSensorSelection = document.getElementById("sensorSelected").value = params["sensor"];
+            currentSensorSelection = document.getElementById("sensorSelected").value = payload["sensor"];
             client.subscribe(returnTopic);
             table = room+"_"+currentSensorSelection;
             message = new Paho.MQTT.Message(table+","+from+","+to+","+returnTopic);
             message.destinationName = "archiver/get";
             client.send(message);
             
-            updateSetpointFromRoomSelection(params["tDay"], params["tNight"]);
+            updateSetpointFromRoomSelection(payload["tDay"], payload["tNight"]);
         }
     }
 

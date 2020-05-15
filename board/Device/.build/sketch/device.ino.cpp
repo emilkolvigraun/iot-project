@@ -69,23 +69,23 @@ void initialize_wifi();
 void onMessageReceived(char* topic, byte* message, unsigned int length);
 #line 188 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 void updateRelevantSetpoint(char* data);
-#line 202 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+#line 206 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 void encodeToJson(char* payload);
-#line 238 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+#line 242 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 void reconnect();
-#line 253 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+#line 257 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 int getSetpoint(bool daytime);
-#line 261 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+#line 265 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 bool isDay(int currentHour);
-#line 268 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+#line 272 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 float calculateVentilationWattage(int currentHour, float currentTemperature);
-#line 283 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+#line 287 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 float calculateAirMass(float currentTemperature);
-#line 294 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+#line 298 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 float calculateVentilationEffect(float joules, float currentTemperature);
-#line 299 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+#line 303 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 float validateVentilationEffect(int currentHour, float effect, float temperature);
-#line 308 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
+#line 312 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 void loop();
 #line 58 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\device.ino"
 bool initSDCard(){
@@ -227,8 +227,12 @@ void updateRelevantSetpoint(char* data){
   int hour = timeNTPClient.getHours()+2;
   if (hour > 6 && hour < 21){
     temperatureSetpointDay = setpoint;
+    Serial.print("updated day setpoint to: ");
+    Serial.println(setpoint);
   } else {
     temperatureSetpointNight = setpoint;
+    Serial.print("updated night setpoint to: ");
+    Serial.println(setpoint);
   }
 }
 

@@ -195,8 +195,12 @@ void updateRelevantSetpoint(char* data){
   int hour = timeNTPClient.getHours()+2;
   if (hour > 6 && hour < 21){
     temperatureSetpointDay = setpoint;
+    Serial.print("updated day setpoint to: ");
+    Serial.println(setpoint);
   } else {
     temperatureSetpointNight = setpoint;
+    Serial.print("updated night setpoint to: ");
+    Serial.println(setpoint);
   }
 }
 
