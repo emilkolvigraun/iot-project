@@ -337,7 +337,7 @@
     function renderGraphs(){
         room    = document.getElementById("roomSelect");
         room    = getSelectedOption(room).value;
-        if (room != 'NaN' && room.lengt > 0 && room != null){
+        if (room != 'NaN' && room.length > 0 && room != null){
             while ( temperatureData.length > 0) { temperatureData.pop(); }
             while ( luxData.length > 0) { luxData.pop(); }
             while ( humidityData.length > 0) { humidityData.pop(); }
