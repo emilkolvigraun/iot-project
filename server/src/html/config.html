@@ -270,13 +270,13 @@
             sensors = getSensors();
             select = document.getElementById("sensorsSelect");
             selection = getSelectedOption(select);
-            if (contains(rooms, selection.value)){
+            if (contains(sensors, selection.value)){
                 select.innerHTML = "<option style="+'"font-weight: bold;"'+"value="+ selection.value +">"+selection.value+"</option>";
             } else {
                 select.innerHTML = "<option value=NaN></option>";
             }
-            for (i = 0; i < rooms.length; i++){
-                select.innerHTML += "<option value="+ rooms[i] +">"+ rooms[i] +"</option>";
+            for (i = 0; i < sensors.length; i++){
+                select.innerHTML += "<option value="+ sensors[i] +">"+ sensors[i] +"</option>";
             }
             setTimeout(update, 1000);            
         }
