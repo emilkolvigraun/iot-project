@@ -32,9 +32,6 @@
                             <div class="fixed">
                                 <font>Room name:</font>
                                 <input id="roomName" type="text"></input><br>
-                                <!-- WINDOW HEIGHT -->
-                                <font>Window height: </font><font id="windowHeight">2m</font>
-                                <input type="range" min="1" max="4" value="2" class="slider" id="windowHeightSlider" onchange="updateWindowHeight(this.value)"><br>
                                 <!-- ROOM HEIGHT -->
                                 <font>Room height: </font><font id="roomHeight">2m</font>
                                 <input type="range" min="1" max="5" value="3" class="slider" id="roomHeightSlider" onchange="updateRoomHeight(this.value)"><br>
@@ -51,9 +48,6 @@
                                 <select id="sensorsSelect">
                                     <option value="NaN"></option>
                                 </select><br>
-                                <!-- WINDOW WIDTH -->
-                                <font>Window width: </font><font id="windowWidth">2m</font>
-                                <input type="range" min="1" max="4" value="2" class="slider" id="windowWidthSlider" onchange="updateWindowWidth(this.value)"><br>
                                 <!-- ROOM WIDTH -->
                                 <font>Room width: </font><font id="roomWidth">15m</font>
                                 <input type="range" min="1" max="30" value="15" class="slider" id="roomWidthSlider" onchange="updateRoomWidth(this.value)"><br>
@@ -222,26 +216,12 @@
                 error.innerHTML = "A sensor must be selected.";
                 return;
             }
-
-            windowHeight = document.getElementById("windowHeightSlider").value;
             roomHeight = document.getElementById("roomHeightSlider").value;
-            if (parseInt(windowHeight) > parseInt(roomHeight)){
-                error.innerHTML = "Window height cannot be larger than room height.";
-                return;
-            }
-
-            windowWidth = document.getElementById("windowWidthSlider").value;
             roomWidth = document.getElementById("roomWidthSlider").value;
-            if (parseInt(windowWidth) > parseInt(roomWidth)){
-                error.innerHTML = "Window width cannot be larger than room width.";
-                return;
-            }
-
+    
             payload = {
                 "room":roomName.split(" ").join(""),
                 "sensor": sensor.value,
-                "windowHeight":windowHeight,
-                "windowWidth":windowWidth,
                 "roomHeight":roomHeight,
                 "roomWidth":roomWidth,
                 "roomLength":document.getElementById("roomLengthSlider").value,
@@ -301,14 +281,6 @@
 
         function updateRoomHeight(value){
             document.getElementById("roomHeight").innerHTML = value+"m";
-        }
-
-        function updateWindowHeight(value){
-            document.getElementById("windowHeight").innerHTML = value+"m";
-        }
-
-        function updateWindowWidth(value){
-            document.getElementById("windowWidth").innerHTML = value+"m";
         }
 
         function updateTDay(value){

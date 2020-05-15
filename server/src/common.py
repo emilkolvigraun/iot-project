@@ -54,8 +54,6 @@ class Common:
         name = room['room']
         self.rooms.update({name:{
             'sensor':room['sensor'], 
-            'windowHeight': room['windowHeight'], 
-            'windowWidth': room['windowWidth'],
             'roomHeight': room['roomHeight'],
             'roomWidth': room['roomWidth'],
             'roomLength': room['roomLength'],
