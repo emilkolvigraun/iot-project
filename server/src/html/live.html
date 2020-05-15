@@ -346,14 +346,14 @@
             from = convertToUnix(document.getElementById("fromPeriod").innerHTML);
             to   = convertToUnix(document.getElementById("toPeriod").innerHTML);
             
-            currentSensorSelection = document.getElementById("sensorSelected").value = payload["sensor"];
+            currentSensorSelection = payload["sensor"];
+            updateSetpointFromRoomSelection(payload["tDay"], payload["tNight"]);
             client.subscribe(returnTopic);
             table = room+"_"+currentSensorSelection;
             message = new Paho.MQTT.Message(table+","+from+","+to+","+returnTopic);
             message.destinationName = "archiver/get";
             client.send(message);
             
-            updateSetpointFromRoomSelection(payload["tDay"], payload["tNight"]);
         }
     }
 

@@ -172,9 +172,9 @@ void onMessageReceived(char* topic, byte* message, unsigned int length) {
   {
     payload[i] = (char)message[i];
   }
-
+  Serial.print("Received from topic: ");
   if (topic == (MAC_ADDRESS+"/room/config").c_str()){
-    Serial.println('room/config');
+    Serial.println("room/config");
     if (SD_CARD_AVAILABLE){
       writeToConfigFile(payload);
     }
