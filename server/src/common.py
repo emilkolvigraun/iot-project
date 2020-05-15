@@ -52,6 +52,15 @@ class Common:
 
     def append_room(self, room:dict):
         name = room['room']
+
+        delete_rooms = []
+        for key in list(self.rooms.keys()):
+            if room['sensor'] == self.rooms[key]['sensor']:
+                delete_rooms += [key]
+
+        for key in delete_rooms:
+            del self.rooms[key]
+
         self.rooms.update({name:{
             'sensor':room['sensor'], 
             'roomHeight': room['roomHeight'],
@@ -65,3 +74,6 @@ class Common:
         print(self.rooms)
         with open('../etc/rooms.json', 'w') as cf:
             cf.write(json.dumps(self.rooms))
+
+    def update_setpoint(self, payload:dict):
+        pass

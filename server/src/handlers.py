@@ -30,6 +30,7 @@ class Handler:
             # configuration routes
             web.get('/configuration/sensor/get', self.get_sensors),
             web.get('/configuration/rooms/get', self.get_rooms),
+            web.get('/configuration/room/setpoint/update', self.update_setpoint),
             web.get('/configuration/rooms/get/configuration/{room}', self.get_room_configuration),
             web.delete('/configuration/rooms/delete/configuration/{room}', self.delete_room),
             web.post('/configuration/sensor/set/room', self.set_sensor_configuration)
@@ -98,6 +99,12 @@ class Handler:
         payload = await request.json()
         self.com.append_room(payload)
         self.com.update(common.PUBLISH, payload['sensor']+'/room/config', json.dumps(payload))
+        return web.Response(status=200)
+
+    async def update_setpoint(self, request):
+        payload = await request.json()
+        self.com.update_setpoint(payload)
+        self.com.update(common.PUBLISH, payload['sensor']+'/setpoint', json.dumps({ "setpoint": payload['setpoint'] }))
         return web.Response(status=200)
 
     async def delete_room(self, request):

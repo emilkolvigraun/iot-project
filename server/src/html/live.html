@@ -32,7 +32,11 @@
                                 <font>Room:</font><br>
                                 <select id="roomSelect" onchange="renderGraphs()">
                                     <option value="NaN"></option>
-                                </select>
+                                </select><br>
+                                <div style="margin-top: 21px;">
+                                    <button id="newRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; margin-right: 5px; background-color: #2ECC71; padding: 0px;" onclick="newRoom()">+</button>
+                                    <button id="deleteRoom" style="width: 40px; font-size: 22px; font-size: bold; height: 40px; background-color: #E74C3C; padding: 0px;" onclick="deleteCurrentRoom()">-</button><br>
+                                </div>
                             </div>
                             <div class="flex-item" style="width:49%; text-align: center;">
                                 <font>Time period:</font><br>

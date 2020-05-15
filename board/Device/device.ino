@@ -17,6 +17,7 @@
 
 File configFile;
 StaticJsonDocument<600> configJsonFile;
+StaticJsonDocument<600> setpointJsonFile;
 
 const char* ssid = "Luke SkyRouter";
 const char* pass = "NT7TVT4WS3HAFX";
@@ -45,7 +46,13 @@ int roomLength;
 int nrOfWindows;
 int temperatureSetpointDay;
 int temperatureSetpointNight;
+
 bool ventilation;
+
+float UPDATE_TIME = 2; // seconds
+unsigned long lastUpdate = 0;
+
+float ventilationEffect = 0;
 
 /* initialize sd card connection */
 bool initSDCard(){
@@ -97,7 +104,7 @@ void setup(){
       }
     }
 
-    if (i > 10){
+    if (i > 50){
       encodeToJson(content);
     }
 
@@ -117,16 +124,17 @@ void setup(){
 
   // Setup MQTT configurations
   client.setServer(mqtt_server_ip, port);
-  client.setCallback(callback);
+  client.setCallback(onMessageReceived);  
 
-  if (!loadedConfig) {
-    if (!client.connected()) {
-      reconnect();
-    }
-
-    client.publish("sensor/registration", (MAC_ADDRESS+"/temperature").c_str());
+  if (!client.connected()) {
+    Serial.println("Reconnecting...");
+    reconnect();
   }
-  
+
+  client.publish("sensor/registration", (MAC_ADDRESS+"/temperature").c_str());
+  client.publish("sensor/registration", (MAC_ADDRESS+"/humidity").c_str());
+  client.publish("sensor/registration", (MAC_ADDRESS+"/lux").c_str());
+  client.publish("sensor/registration", (MAC_ADDRESS+"/ventilation").c_str());
 }
 
 void writeToConfigFile(char* payload){
@@ -157,16 +165,38 @@ void initialize_wifi(){
   MAC_ADDRESS = WiFi.macAddress();
 }
 
-void callback(char* topic, byte* message, unsigned int length) {
+void onMessageReceived(char* topic, byte* message, unsigned int length) {
   char payload[length];
   for (int i=0;i<length;i++)
   {
     payload[i] = (char)message[i];
   }  
-  if (SD_CARD_AVAILABLE){
-    writeToConfigFile(payload);
+
+  if (topic == (MAC_ADDRESS+"/room/config").c_str()){
+    Serial.println('room/config');
+    if (SD_CARD_AVAILABLE){
+      writeToConfigFile(payload);
+    }
+    encodeToJson(payload);
+    Serial.println("Loaded new config.");
+  } else if (topic == (MAC_ADDRESS+"/setpoint").c_str()){
+    Serial.println("ADJUST CURRENT SETPOINT!");
+    updateRelevantSetpoint(payload);
   }
-  encodeToJson(payload);
+}
+
+void updateRelevantSetpoint(char* data){
+  if (deserializeJson(setpointJsonFile, data)) {
+    return;
+  }
+
+  int setpoint = setpointJsonFile["setpoint"];
+  int hour = timeNTPClient.getHours()+2;
+  if (hour > 6 && hour < 21){
+    temperatureSetpointDay = setpoint;
+  } else {
+    temperatureSetpointNight = setpoint;
+  }
 }
 
 void encodeToJson(char* payload){
@@ -211,8 +241,8 @@ void reconnect() {
 
     // Attempt to connect
     if (client.connect(MAC_ADDRESS.c_str())) {
-      Serial.println(("Subscribed to: "+MAC_ADDRESS+"/room/config").c_str());
       client.subscribe((MAC_ADDRESS+"/room/config").c_str());
+      client.subscribe((MAC_ADDRESS+"/setpoint").c_str());
     } else {
       // Wait 5 seconds before retrying
       delay(1000);
@@ -235,46 +265,81 @@ bool isDay(int currentHour){
   return false;
 }
 
-int calculateVentilationWattage(int currentHour, float currentTemperature){
+float calculateVentilationWattage(int currentHour, float currentTemperature){
   bool daytime = isDay(currentHour);
   int setpoint = getSetpoint(daytime);
+  Serial.print("Current setpoint: ");
+  Serial.println(setpoint);
   float delta;
   if (currentTemperature > setpoint) {
     delta = currentTemperature - setpoint;
   } else {
     delta = setpoint - currentTemperature;
   }
-  return (delta * 8.4) * 100; // scaled to something that seems fair
+  float wattage = (delta * 8.4) * 100;
+  return wattage; // scaled to something that seems fair
 }
 
-float calculateAirMass(){
-  return 1;
+float calculateAirMass(float currentTemperature){
+  float pressure = (101.325*1000) / (287.058 * (currentTemperature * 273.15));
+  float mass = pressure * (roomHeight * roomLength * roomWidth);
+
+  if (mass < 0){
+    mass = mass * -1;
+  }
+
+  return mass;
 }
 
-float calculateVentilationEffect(){
-  return 1;
+float calculateVentilationEffect(float joules, float currentTemperature){
+  float numerator = joules / calculateAirMass(currentTemperature);
+  return numerator / 1012;
+}
+
+float validateVentilationEffect(int currentHour, float effect, float temperature){
+  bool daytime = isDay(currentHour);
+  int setpoint = getSetpoint(daytime);
+  if (temperature > setpoint){
+    return -effect;
+  } 
+  return effect;
 }
 
 void loop(){
   timeNTPClient.update();
 
-  if (loadedConfig) {
+  if (!client.connected()) {
+    Serial.println("Reconnecting...");
+    reconnect();
+  }
+  client.loop();
 
-    if (!client.connected()) {
-      Serial.println("Reconnecting...");
-      reconnect();
+  unsigned long t0 = timeNTPClient.getEpochTime();
+  double t1 = t0 - lastUpdate;
+  if (t1 >= UPDATE_TIME){
+
+    if (loadedConfig) {
+
+      float temperature = get_temperature();
+      String light      = (String) get_ambientLight();
+      String humidity   = (String) get_humidity();
+
+      unsigned long epochTime = timeNTPClient.getEpochTime();
+
+      float ventilationWattage = 0;
+      if (ventilation){
+        temperature += ventilationEffect;
+        int hour = timeNTPClient.getHours()+2;
+        ventilationWattage = calculateVentilationWattage(hour, temperature);
+        float effect = calculateVentilationEffect(ventilationWattage * UPDATE_TIME, temperature);
+        effect = validateVentilationEffect(hour, effect, temperature);
+        ventilationEffect += effect;
+        temperature += effect;
+      } 
+
+      unsigned long currentTime = timeNTPClient.getEpochTime();      
     }
-
-    client.loop();
-
-    float temperature     = get_temperature();
-    String lightSensor    = (String) get_ambientLight();
-    String humiditySensor = (String) get_humidity();
-
-    unsigned long epochTime = timeNTPClient.getEpochTime();
-
-    int hour = timeNTPClient.getHours()+2;
-    int ventilationWattage =  calculateVentilationWattage(hour, temperature);
-
+    unsigned long t2 = timeNTPClient.getEpochTime();
+    lastUpdate = t2 - (t0 - t2);
   }
 } 
