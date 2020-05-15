@@ -274,7 +274,7 @@
     }
 
     function updateRoomContent(){
-        rooms = http("http://127.0.0.1:8000/configuration/rooms/get", "GET", null);
+        rooms = http("http://192.168.1.133:8000/configuration/rooms/get", "GET", null);
         rooms = parseStringToList(rooms);
         select = document.getElementById("roomSelect");
         selection = getSelectedOption(select);
@@ -297,7 +297,7 @@
             while ( humidityData.length > 0) { humidityData.pop(); }
             while ( ventilationData.length > 0) { ventilationData.pop(); }
             
-            payload = JSON.parse(http("http://127.0.0.1:8000/configuration/rooms/get/configuration/"+room, "GET", null));
+            payload = JSON.parse(http("http://192.168.1.133:8000/configuration/rooms/get/configuration/"+room, "GET", null));
             
             from = convertToUnix(document.getElementById("fromPeriod").innerHTML);
             to   = convertToUnix(document.getElementById("toPeriod").innerHTML);

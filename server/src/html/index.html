@@ -59,7 +59,7 @@
             username = document.getElementById("usn");
             password = document.getElementById("pwd");
 
-            response = http("http://127.0.0.1:8000/login", "POST", JSON.stringify({"username":username.value, "password":password.value}));
+            response = http("http://192.168.1.133:8000/login", "POST", JSON.stringify({"username":username.value, "password":password.value}));
             
             
             error = document.getElementById("errorMsg");
