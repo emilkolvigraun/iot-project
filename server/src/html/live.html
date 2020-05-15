@@ -319,11 +319,13 @@
 
     function updateSetpointFromRoomSelection(Tday, Tnight){
         currentSetpointValue = getCurrentSetpoint(Tday, Tnight);
+        console.log("currentSetpointValue " + currentSetpointValue);
         updateCurrentSetpointLabel(currentSetpointValue);
     }
 
     function getCurrentSetpoint(Tday, Tnight){
         hour = new Date().getHours();
+        console.log("hour " + hour);
         if (hour > 6 && hour < 21){
             time = "day";
             return Tday;
@@ -347,6 +349,7 @@
             to   = convertToUnix(document.getElementById("toPeriod").innerHTML);
             
             currentSensorSelection = payload["sensor"];
+            console.log("currentSensorSelection " + currentSensorSelection);
             updateSetpointFromRoomSelection(payload["tDay"], payload["tNight"]);
             client.subscribe(returnTopic);
             table = room+"_"+currentSensorSelection;

@@ -205,14 +205,14 @@ void onMessageReceived(char* topic, byte* message, unsigned int length) {
     payload[i] = (char)message[i];
   }  
   Serial.print("Received from topic: ");
-  if (topic == (MAC_ADDRESS+"/room/config").c_str()){
+  if (((String) topic) == (MAC_ADDRESS+"/room/config")){
     Serial.println("room/config");
     if (SD_CARD_AVAILABLE){
       writeToConfigFile(payload);
     }
     encodeToJson(payload);
     Serial.println("Loaded new config.");
-  } else if (topic == (MAC_ADDRESS+"/setpoint").c_str()){
+  } else if (((String) topic) == (MAC_ADDRESS+"/setpoint")){
     Serial.println("ADJUST CURRENT SETPOINT!");
     updateRelevantSetpoint(payload);
   }
