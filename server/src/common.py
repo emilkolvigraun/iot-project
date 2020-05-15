@@ -53,12 +53,12 @@ class Common:
     def append_room(self, room:dict):
         name = room['room']
 
-        delete_rooms = []
-        for key in list(self.rooms.keys()):
-            if room['sensor'] == self.rooms[key]['sensor']:
-                delete_rooms += [key]
-
-        for key in delete_rooms:
+        remove_keys = []
+        for key in list(self.rooms.keys()) :
+            if (room['sensor'] == self.rooms[key]['sensor']):
+                remove_keys += [key]
+        
+        for key in remove_keys:
             del self.rooms[key]
 
         self.rooms.update({name:{
@@ -71,7 +71,9 @@ class Common:
             'tNight': room['tNight'],
             'ventilation': room['ventilation']}})
 
-        print(self.rooms)
+        self.write_rooms()
+
+    def write_rooms(self):
         with open('../etc/rooms.json', 'w') as cf:
             cf.write(json.dumps(self.rooms))
 
