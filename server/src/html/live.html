@@ -371,12 +371,17 @@
     }
 
     function updateFromPeriod(value){
+        message = new Paho.MQTT.Message(table+","+returnTopic);
+        message.destinationName = "archiver/stop";
+        client.send(message);
         document.getElementById("fromPeriod").innerHTML = timeConverter(value);
         renderGraphs();
     }
 
     function updateToPeriod(value){
-        console.log('updating');
+        message = new Paho.MQTT.Message(table+","+returnTopic);
+        message.destinationName = "archiver/stop";
+        client.send(message);
         if (value > Date.now()/1000){
             document.getElementById("toPeriod").innerHTML = "continuous";
             renderGraphs();
