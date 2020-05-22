@@ -43,7 +43,7 @@ receiver = OnReceive()
 client = MQTTClient(receiver)
 
 client.start_loop()
-client.publish("esp32/room/config", json.dumps({"room":"test"}))
+client.publish("archiver/stop", "EMIL_LIVING_ROOM_30:AE:A4:DC:9A:38,3873643c-6b27-48ae-86f9-20120a07bdf6")
 client.wait(2)
 client.stop_loop()
 # client.subscribe(sensor_name+'/room/config')
