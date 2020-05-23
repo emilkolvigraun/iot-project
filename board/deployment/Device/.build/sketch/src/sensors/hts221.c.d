@@ -1,5 +1,5 @@
-c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\sketch\src\sensors\hts221.c.o: \
- c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\sketch\src\sensors\hts221.c \
+c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\sketch\src\sensors\hts221.c.o: \
+ c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\sketch\src\sensors\hts221.c \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/newlib/stdio.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/newlib/_ansi.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/newlib/newlib.h \
@@ -83,5 +83,5 @@ c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\sketch\src\
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/freertos/freertos/list.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/freertos/freertos/queue.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/esp_ringbuf/freertos/ringbuf.h \
- c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\sketch\src\sensors\hts221.h \
- c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\sketch\src\sensors\iot_i2c_bus.h
+ c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\sketch\src\sensors\hts221.h \
+ c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\sketch\src\sensors\iot_i2c_bus.h

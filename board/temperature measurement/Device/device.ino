@@ -1,10 +1,10 @@
 #include "src/sensor_manager.h"
 
-#define seconds()(millis()/1000);
+#define seconds()(millis());
 
 double systemTime;
 double lastUpdate;
-int updateTime = 0.01; 
+int updateTime = 100; 
 
 void setup(){ 
   systemTime = seconds();  
@@ -21,7 +21,6 @@ void setup(){
 void loop(){
   systemTime = seconds();
   double t1 = systemTime - lastUpdate;
-
   if (t1 >= updateTime){
       float temperature = get_temperature();
       float light       = get_ambientLight();

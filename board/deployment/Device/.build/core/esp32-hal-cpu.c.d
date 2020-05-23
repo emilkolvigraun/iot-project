@@ -1,4 +1,4 @@
-c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\core\esp32-hal-cpu.c.o: \
+c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\core\esp32-hal-cpu.c.o: \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\cores\esp32\esp32-hal-cpu.c \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/config/sdkconfig.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/freertos/freertos/FreeRTOS.h \

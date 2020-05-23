@@ -1,4 +1,4 @@
-c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\libraries\WiFi\WiFiMulti.cpp.o: \
+c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\libraries\WiFi\WiFiMulti.cpp.o: \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\WiFi\src\WiFiMulti.cpp \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\WiFi\src\WiFiMulti.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\WiFi\src\WiFi.h \

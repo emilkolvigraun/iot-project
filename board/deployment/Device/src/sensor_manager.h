@@ -9,8 +9,8 @@ extern "C"
 {
 #endif
     typedef void (*button_cb)(void *);
-
-    void initialize_sensors();
+ 
+    void initSensors();
     float get_temperature();
     float get_humidity();
     float get_ambientLight();

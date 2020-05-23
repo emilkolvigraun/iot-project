@@ -10,67 +10,62 @@
     "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\variants\\esp32"
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\device.ino.cpp",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\device.ino.cpp",
     "Include": "WiFi.h",
     "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\WiFi\\src"
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\device.ino.cpp",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\device.ino.cpp",
     "Include": "PubSubClient.h",
     "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\libraries\\PubSubClient\\src"
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\device.ino.cpp",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\device.ino.cpp",
     "Include": "ArduinoJson.h",
     "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\libraries\\ArduinoJson\\src"
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\device.ino.cpp",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\device.ino.cpp",
     "Include": "SD.h",
     "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\SD\\src"
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\device.ino.cpp",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\device.ino.cpp",
     "Include": "FS.h",
     "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\FS\\src"
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\device.ino.cpp",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\device.ino.cpp",
     "Include": "SPI.h",
     "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\SPI\\src"
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\device.ino.cpp",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\device.ino.cpp",
     "Include": "NTPClient.h",
     "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\libraries\\NTPClient"
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\device.ino.cpp",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\device.ino.cpp",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\src\\parson.c",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\src\\sensor_manager.c",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\src\\sensor_manager.c",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\src\\sensors\\bh1750.c",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\src\\sensors\\bh1750.c",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\src\\sensors\\hts221.c",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\src\\sensors\\hts221.c",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\Device\\.build\\sketch\\src\\sensors\\i2c_bus.c",
+    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\.build\\sketch\\src\\sensors\\i2c_bus.c",
     "Include": "",
     "Includepath": null
   },

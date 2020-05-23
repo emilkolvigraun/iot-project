@@ -6,7 +6,7 @@
 
 double systemTime;
 double lastUpdate;
-int updateTime = 0.01; 
+int updateTime = 0.1; 
 
 #line 9 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\temperature measurement\\Device\\device.ino"
 void setup();

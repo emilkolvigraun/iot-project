@@ -1,4 +1,4 @@
-c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\libraries\WiFi\WiFiUdp.cpp.o: \
+c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\libraries\WiFi\WiFiUdp.cpp.o: \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\WiFi\src\WiFiUdp.cpp \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\WiFi\src\WiFiUdp.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\cores\esp32/Arduino.h \

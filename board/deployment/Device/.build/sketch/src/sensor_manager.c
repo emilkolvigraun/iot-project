@@ -16,8 +16,7 @@ static bh1750_handle_t bh1750 = NULL;
 /**
  * @brief i2c master initialization
  */
-static void i2c_master_init()
-{
+static void i2c_master_init(){
     int i2c_master_port = I2C_NUM_0;
     i2c_config_t conf;
     conf.mode = I2C_MODE_MASTER;
@@ -30,8 +29,7 @@ static void i2c_master_init()
     i2c_bus = iot_i2c_bus_create(i2c_master_port, &conf);
 }
 
-void init_humiture_sensor()
-{
+void init_humiture_sensor(){
     hts221 = iot_hts221_create(i2c_bus, HTS221_I2C_ADDRESS);
 
     hts221_config_t hts221_config;
@@ -45,8 +43,7 @@ void init_humiture_sensor()
     iot_hts221_set_activate(hts221);
 }
 
-void init_ambient_light_sensor()
-{
+void init_ambient_light_sensor(){
     bh1750 = iot_bh1750_create(i2c_bus, BH1750_I2C_ADDRESS);
     bh1750_cmd_measure_t cmd_measure = BH1750_CONTINUE_4LX_RES;
     iot_bh1750_power_on(bh1750);
@@ -55,8 +52,7 @@ void init_ambient_light_sensor()
 
 
 
-void initialize_sensors()
-{
+void initSensors(){
     i2c_master_init();
     init_humiture_sensor();
     init_ambient_light_sensor();
@@ -64,8 +60,7 @@ void initialize_sensors()
 }
 
 
-float get_temperature()
-{
+float get_temperature(){
     int16_t temperature;
     if (hts221 == NULL)
     {
@@ -76,8 +71,7 @@ float get_temperature()
     return (float)temperature / 10;
 }
 
-float get_humidity()
-{
+float get_humidity(){
     int16_t humidity;
     if (hts221 == NULL)
     {
@@ -88,8 +82,7 @@ float get_humidity()
     return (float)humidity / 10;
 }
 
-float get_ambientLight()
-{
+float get_ambientLight(){
 
     int ret;
     float bh1750_data;
@@ -104,5 +97,5 @@ float get_ambientLight()
         printf("No ack, sensor not connected...\n");
         return 0;
     }
-    return bh1750_data;
+    return bh1750_data; 
 }

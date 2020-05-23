@@ -1,4 +1,4 @@
-c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\libraries\FS\vfs_api.cpp.o: \
+c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\libraries\FS\vfs_api.cpp.o: \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\FS\src\vfs_api.cpp \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\FS\src\vfs_api.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\FS\src\FS.h \

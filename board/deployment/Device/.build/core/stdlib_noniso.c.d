@@ -1,4 +1,4 @@
-c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\core\stdlib_noniso.c.o: \
+c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\core\stdlib_noniso.c.o: \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\cores\esp32\stdlib_noniso.c \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/newlib/stdlib.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/newlib/machine/ieeefp.h \

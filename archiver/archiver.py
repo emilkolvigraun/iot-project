@@ -57,11 +57,12 @@ class StorageEngine(Receiver):
                     print(e)
             print('after ->', self.return_topics[table])
         else:
+            print(message.topic, msg)
             debunked_message = msg.split(',')
             debunked_topic   = message.topic.split('/')
             table = debunked_message[1] + '_' + debunked_topic[0]
             table = table.replace(':', '-')
-
+ 
             try:
                 if not self.db.table_exists(table):
                     self.db.create(table)

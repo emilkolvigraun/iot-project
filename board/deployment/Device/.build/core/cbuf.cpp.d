@@ -1,4 +1,4 @@
-c:\Users\emilk\Documents\IoT\project\iot-project\board\Device\.build\core\cbuf.cpp.o: \
+c:\Users\emilk\Documents\IoT\project\iot-project\board\deployment\Device\.build\core\cbuf.cpp.o: \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\cores\esp32\cbuf.cpp \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\cores\esp32\cbuf.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4/tools/sdk/include/newlib/stdint.h \

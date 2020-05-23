@@ -5,7 +5,7 @@
 
 double systemTime;
 double lastUpdate;
-int updateTime = 0.01;
+int updateTime = 0.1;
 
 void setup(){
   systemTime = (millis()/1000);;
