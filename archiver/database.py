@@ -5,14 +5,14 @@ class Database:
     def create(self, table:str):
         with sql.connect('archive.db') as con:
             cursor = con.cursor()
-            cursor.execute("CREATE TABLE '"+table+"' (time_send, datatype, value, time_received)")
+            cursor.execute("CREATE TABLE '"+table+"' (time_send, datatype, value, time_received, packet)")
             con.commit()
 
-    def insert(self, table:str, time:str, datatype:str, value:str, received:str):
+    def insert(self, table:str, time:str, datatype:str, value:str, received:str, packet:str):
         with sql.connect('archive.db') as con:
             cursor = con.cursor()
-            cursor.execute("INSERT INTO '"+table+"' VALUES ( "+time+", '"+datatype+"' ,"+value+", "+received+")")
-            con.commit()
+            cursor.execute("INSERT INTO '"+table+"' VALUES ( "+time+", '"+datatype+"' ,"+value+", "+received+", "+packet+")")
+            con.commit() 
 
     def get_where(self, from_date, to_date, table:str):
         with sql.connect('archive.db') as con:
