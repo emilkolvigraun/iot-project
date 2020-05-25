@@ -76,7 +76,7 @@
         }
 
         function connectClient(){
-            client = new Paho.MQTT.Client("192.168.0.45", 8001, create_UUID());
+            client = new Paho.MQTT.Client("192.168.1.133", 8001, create_UUID());
             client.onConnectionLost = onConnectionLost;
             client.onMessageArrived = onMessageArrived;
             client.connect();
@@ -294,7 +294,7 @@
     }
 
     function updateRoomContent(){
-        rooms = http("http://192.168.0.45:8000/configuration/rooms/get", "GET", null);
+        rooms = http("http://192.168.1.133:8000/configuration/rooms/get", "GET", null);
         rooms = parseStringToList(rooms);
         select = document.getElementById("roomSelect");
         selection = getSelectedOption(select);
@@ -319,7 +319,7 @@
     }
 
     function updateSetpointRoom(){
-        http("http://192.168.0.45:8000/configuration/room/setpoint/update", "POST", JSON.stringify({"sensor":currentSensorSelection, "setpoint":currentSetpointValue, "time":time}))
+        http("http://192.168.1.133:8000/configuration/room/setpoint/update", "POST", JSON.stringify({"sensor":currentSensorSelection, "setpoint":currentSetpointValue, "time":time}))
     }
 
     function updateCurrentSetpointLabel(value){
@@ -353,7 +353,7 @@
             while ( humidityData.length > 0) { humidityData.pop(); }
             while ( ventilationData.length > 0) { ventilationData.pop(); }
             
-            payload = JSON.parse(http("http://192.168.0.45:8000/configuration/rooms/get/configuration/"+room, "GET", null));
+            payload = JSON.parse(http("http://192.168.1.133:8000/configuration/rooms/get/configuration/"+room, "GET", null));
             
             from = convertToUnix(document.getElementById("fromPeriod").innerHTML);
             to   = convertToUnix(document.getElementById("toPeriod").innerHTML);

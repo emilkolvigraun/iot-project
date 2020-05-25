@@ -182,7 +182,7 @@
         function deleteCurrentRoom(){
             select = document.getElementById("roomSelect");
             selection = getSelectedOption(select);
-            http("http://192.168.0.45:8000/configuration/rooms/delete/configuration/"+selection.value, "DELETE", null);
+            http("http://192.168.1.133:8000/configuration/rooms/delete/configuration/"+selection.value, "DELETE", null);
             updateRoomContent();
             setRoomParams();
         }
@@ -198,7 +198,7 @@
         }
 
         function updateRoomContent(){
-            rooms = http("http://192.168.0.45:8000/configuration/rooms/get", "GET", null);
+            rooms = http("http://192.168.1.133:8000/configuration/rooms/get", "GET", null);
             rooms = parseStringToList(rooms);
             select = document.getElementById("roomSelect");
             selection = getSelectedOption(select);
@@ -225,7 +225,7 @@
                 return;
             }
             
-            params = http("http://192.168.0.45:8000/configuration/rooms/get/configuration/"+selection, "GET", null);
+            params = http("http://192.168.1.133:8000/configuration/rooms/get/configuration/"+selection, "GET", null);
             params = JSON.parse(params);
             
             document.getElementById("sensorSelected").value = params["sensor"];

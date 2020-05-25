@@ -57,7 +57,7 @@
 
         function updateAlerts(){
             alertDiv = document.getElementById("alertdiv");
-            payload = http("http://192.168.0.45:8000/alerts/get", "GET", null);
+            payload = http("http://192.168.1.133:8000/alerts/get", "GET", null);
             getAlerts = parseStringToList(payload);
             alertDiv.innerHTML = "";
             console.log(getAlerts.length)
