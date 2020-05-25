@@ -28,6 +28,7 @@ button {
 /* right side div */
 .flex-item {
     flex-grow: 1;
+    margin-bottom: 1%;
 }
 
 input[type=text]{

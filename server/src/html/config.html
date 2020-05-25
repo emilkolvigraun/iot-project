@@ -42,6 +42,12 @@
                                 <font>T setpoint NIGHT: </font><font id="Tnight">13℃</font>
                                 <input type="range" min="1" max="15" value="13" class="slider" id="TnightSlider" onchange="updateTNight(this.value)">
                                 <input type="checkbox" id="ventilationToogle" checked="checked" onclick="toggleVentilation()">
+                                <!-- Temperature Bound -->
+                                <font>Temperature bound: </font><font id="tBound">0.1℃</font>
+                                <input type="range" min="0.0" max="5.0" value="0.1" step="0.1" class="slider" id="boundTempSlider" onchange="updateTempBound(this.value)">
+                                <!-- Lux Bound --><br>
+                                <font>Light bound: </font><font id="lBound">1 lux</font>
+                                <input type="range" min="1" max="5.0" value="1" class="slider" id="boundLuxSlider" onchange="updateLuxBound(this.value)">
                             </div>
                             <div class="flex-item">
                                 <font>Sensor:</font><br>
@@ -49,14 +55,17 @@
                                     <option value="NaN"></option>
                                 </select><br>
                                 <!-- ROOM WIDTH -->
-                                <font>Room width: </font><font id="roomWidth">15m</font>
+                                <font>Room width: </font><font id="roomWidth">15m</font> <br>
                                 <input type="range" min="1" max="30" value="15" class="slider" id="roomWidthSlider" onchange="updateRoomWidth(this.value)"><br>
                                 <!-- NUMBER OF WINDOWS -->
                                 <font>Number of windows: </font><font id="nrOfWindows">4</font>
                                 <input type="range" min="0" max="4" value="4" class="slider" id="nrOfWindowsSlider" onchange="updateNumberOfWindows(this.value)"><br>
                                 <!-- T DAY -->
-                                <font>T setpoint DAY: </font><font id="Tday">19℃</font>
+                                <font>T setpoint DAY: </font><font id="Tday">19℃</font> <br>
                                 <input type="range" min="15" max="30" value="19" class="slider" id="TdaySlider" onchange="updateTDay(this.value)">
+                                <!-- Humidity Bound -->
+                                <br><font>Humidity bound: </font><font id="hBound">1%</font> <br>
+                                <input type="range" min="1" max="10.0" value="1" class="slider" id="boundHumSlider" onchange="updateHumBound(this.value)">
                             </div>
                         </div>
                         <div id="roomImage" style="width: 300px; height: 300px; background-color: rgb(52, 152, 219); margin-left: 90px; margin-top: 0px; border: 1px solid black; ">
@@ -228,6 +237,9 @@
                 "nrOfWindows":document.getElementById("nrOfWindowsSlider").value,
                 "tDay":document.getElementById("TdaySlider").value,
                 "tNight":document.getElementById("TnightSlider").value,
+                "tBound":document.getElementById("boundTempSlider").value,
+                "hBound":document.getElementById("boundHumSlider").value,
+                "lBound":document.getElementById("boundLuxSlider").value,
                 "ventilation":ventilation
             }
             http("http://192.168.1.133:8000/configuration/sensor/set/room", "POST", JSON.stringify(payload));
@@ -295,6 +307,18 @@
             document.getElementById("nrOfWindows").innerHTML = value;
             amountOfWindows = value;
             getWindows();
+        }
+
+        function updateTempBound(value){
+            document.getElementById("tBound").innerHTML = value+"℃";
+        }
+
+        function updateHumBound(value){
+            document.getElementById("hBound").innerHTML = value+"%";
+        }
+
+        function updateLuxBound(value){
+            document.getElementById("lBound").innerHTML = value+" lux";
         }
 
         update();
