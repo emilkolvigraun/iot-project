@@ -61,15 +61,12 @@ class Common:
             self.alerts.clear()
             self.alerts += new_alerts
 
-
-
     def update_sensors(self, key:str):
         if key not in self.sensors.keys():
             self.sensors.update({key:{}})
             
             with open('../etc/sensors.json', 'w') as cf:
                 cf.write(json.dumps(self.sensors))
-
 
     def stop(self):
         self.updates.clear()
