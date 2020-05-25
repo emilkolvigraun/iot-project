@@ -17,6 +17,7 @@
                             <li><a href="/">Start Page</a></li>
                             <li><a class="active" href="/livedata">Live Data</a></li>
                             <li><a href="/rooms">Rooms</a></li>
+                            <li><a href="/alert">Alerts</a></li>
                         </ul> 
                     </div>
         
@@ -59,6 +60,7 @@
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
     <script>
+        var authenticated = false;
         var client = null;
         var continuous = false;
         var returnTopic = create_UUID();
@@ -74,10 +76,18 @@
         }
 
         function connectClient(){
-            client = new Paho.MQTT.Client("192.168.1.133", 8001, create_UUID());
+            client = new Paho.MQTT.Client("192.168.0.45", 8001, create_UUID());
             client.onConnectionLost = onConnectionLost;
             client.onMessageArrived = onMessageArrived;
             client.connect();
+        }
+
+        function goToNotifications(){
+            if (authenticated !== true){
+                console.log("Not authorized!");
+            } else {
+                location.href = "/notifications.html"
+            }
         }
 
         function create_UUID(){
@@ -284,7 +294,7 @@
     }
 
     function updateRoomContent(){
-        rooms = http("http://192.168.1.133:8000/configuration/rooms/get", "GET", null);
+        rooms = http("http://192.168.0.45:8000/configuration/rooms/get", "GET", null);
         rooms = parseStringToList(rooms);
         select = document.getElementById("roomSelect");
         selection = getSelectedOption(select);
@@ -309,7 +319,7 @@
     }
 
     function updateSetpointRoom(){
-        http("http://192.168.1.133:8000/configuration/room/setpoint/update", "POST", JSON.stringify({"sensor":currentSensorSelection, "setpoint":currentSetpointValue, "time":time}))
+        http("http://192.168.0.45:8000/configuration/room/setpoint/update", "POST", JSON.stringify({"sensor":currentSensorSelection, "setpoint":currentSetpointValue, "time":time}))
     }
 
     function updateCurrentSetpointLabel(value){
@@ -343,7 +353,7 @@
             while ( humidityData.length > 0) { humidityData.pop(); }
             while ( ventilationData.length > 0) { ventilationData.pop(); }
             
-            payload = JSON.parse(http("http://192.168.1.133:8000/configuration/rooms/get/configuration/"+room, "GET", null));
+            payload = JSON.parse(http("http://192.168.0.45:8000/configuration/rooms/get/configuration/"+room, "GET", null));
             
             from = convertToUnix(document.getElementById("fromPeriod").innerHTML);
             to   = convertToUnix(document.getElementById("toPeriod").innerHTML);

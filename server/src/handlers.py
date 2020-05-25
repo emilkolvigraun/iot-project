@@ -26,8 +26,10 @@ class Handler:
             web.get('/configuration', self.config_page),
             web.get('/livedata', self.live_page),
             web.get('/rooms', self.rooms_page),
+            web.get('/alert', self.alerts_page),
 
             # configuration routes
+            web.get('/alerts/get', self.get_alerts),
             web.get('/configuration/sensor/get', self.get_sensors),
             web.get('/configuration/rooms/get', self.get_rooms),
             web.post('/configuration/room/setpoint/update', self.update_setpoint),
@@ -77,6 +79,18 @@ class Handler:
         response = render_template("rooms.html", request, context)
         response.headers['Content-Language'] = 'en'
         return response
+    
+    async def alerts_page(self, request):
+        context = {}
+        response = render_template("alert.html", request, context)
+        response.headers['Content-Language'] = 'en'
+        return response
+
+    async def get_alerts(self, request):
+        alerts = str(self.com.get_alerts())
+        print('handler alert: ',alerts)
+        print('handler alert length: ',len(alerts))
+        return web.Response(text=alerts)
 
     # returns the registered sensors
     async def get_sensors(self, request):

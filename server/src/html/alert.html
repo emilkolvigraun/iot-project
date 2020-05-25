@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>IoT Project - Alerts</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/style/main.css">
+        <link rel="stylesheet" type="text/css" href="/style/configuration.css">
+    </head>
+
+    <body onload="initialize()">
+        <div>
+            <div class="page-content" >
+                    <div class="navbar-div">
+                        <ul>
+                            <p>IoT Project</p>
+                            <li><a href="/">Start Page</a></li>
+                            <li><a class="active" href="/alert">Alerts</a></li>
+                            <li><a href="/livedata">Live Data</a></li>
+                            <li><a href="/rooms">Rooms</a></li>
+                        </ul> 
+                    </div>
+        
+                
+                <!-- PAGE CONTENT -->
+                <div class="content-config">
+                    <div style="border-bottom: solid; padding-bottom: 10px;"><font style="margin-left: -400px; font-size: 22px;">Notifications</font></div>
+                    <div id="alertdiv" onchange="updateAlerts()"></div>
+                <div>
+            <div>           
+    </body>
+
+    <script>
+
+        var authenticated = false;
+        var client = null;
+        
+        function http(url, httptype, payload) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open(httptype, url, false); 
+            xmlHttp.setRequestHeader('Content-type','application/json; charset=utf-8');
+            response = undefined;
+            xmlHttp.onload = function () {
+                    response =  xmlHttp.responseText;
+            }
+            xmlHttp.send(payload);
+            return response
+        }
+
+
+        function parseStringToList(string){
+            string = string.replace("[", "").replace("]", "");
+            string = string.split("'").join("");
+            
+            return string.split(",");
+        }
+
+        function updateAlerts(){
+            alertDiv = document.getElementById("alertdiv");
+            payload = http("http://192.168.0.45:8000/alerts/get", "GET", null);
+            getAlerts = parseStringToList(payload);
+            alertDiv.innerHTML = "";
+            console.log(getAlerts.length)
+            for(i = 0; i<getAlerts.length; i++){
+                console.log("here");
+                alertDiv.innerHTML += `<div class="alerts" style="padding: 20px; background-color: #f44336; color: white;">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';"&times; style="color: white; font-weight: bold; font-size: 16px; line-height: 18px; cursor: pointer; transition: 0.3s; display: block;"</span>
+                    <strong>Alert!</strong> Temperature above boundary!</div>`;
+            }
+            setTimeout(updateAlerts, 1000);
+        }
+
+
+
+        function getCookie(cookieKey) {
+            var cookies = document.cookie.toString();
+            cookies = cookies.split(";");
+            for (i = 0; i < cookies.length; i++){
+                cookie = cookies[i].split("=");
+                key = cookie[0];
+                if (key == cookieKey){
+                    return cookie[1];
+                }
+            }
+            return "";
+        }
+
+        function checkCookie(){
+            var cookie = getCookie('status');
+            if (cookie != "authorized"){
+                location.href = "/";
+            }
+        }
+        
+
+        function initialize(){
+            checkCookie();  
+            updateAlerts();          
+        }
+
+    </script>
+</html>
