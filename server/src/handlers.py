@@ -87,7 +87,10 @@ class Handler:
         return response
 
     async def get_alerts(self, request):
-        return web.Response(text=str(list(self.com.alerts.keys())))
+        alerts = str(self.com.get_alerts())
+        print('handler alert: ',alerts)
+        print('handler alert length: ',len(alerts))
+        return web.Response(text=alerts)
 
     # returns the registered sensors
     async def get_sensors(self, request):

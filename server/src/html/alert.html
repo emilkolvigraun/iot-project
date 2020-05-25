@@ -8,7 +8,7 @@
         <link rel="stylesheet" type="text/css" href="/style/configuration.css">
     </head>
 
-    <body onchange="initialize()">
+    <body onload="initialize()">
         <div>
             <div class="page-content" >
                     <div class="navbar-div">
@@ -25,7 +25,7 @@
                 <!-- PAGE CONTENT -->
                 <div class="content-config">
                     <div style="border-bottom: solid; padding-bottom: 10px;"><font style="margin-left: -400px; font-size: 22px;">Notifications</font></div>
-                    <div id="alert_div" onchange="updateAlerts()"></div>
+                    <div id="alertdiv" onchange="updateAlerts()"></div>
                 <div>
             <div>           
     </body>
@@ -41,35 +41,33 @@
             xmlHttp.setRequestHeader('Content-type','application/json; charset=utf-8');
             response = undefined;
             xmlHttp.onload = function () {
-                    response =  xmlHttp.status;
+                    response =  xmlHttp.responseText;
             }
             xmlHttp.send(payload);
             return response
         }
 
-        function connectClient(){
-            client = new Paho.MQTT.Client("192.168.0.45", 8001, create_UUID());
-            client.onConnectionLost = onConnectionLost;
-            client.onMessageArrived = onMessageArrived;
-            client.connect();
-        }
 
-        function create_UUID(){
-            var dt = new Date().getTime();
-            var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = (dt + Math.random()*16)%16 | 0;
-                dt = Math.floor(dt/16);
-                return (c=='x' ? r :(r&0x3|0x8)).toString(16);
-            });
-            return uuid;
+        function parseStringToList(string){
+            string = string.replace("[", "").replace("]", "");
+            string = string.split("'").join("");
+            
+            return string.split(",");
         }
 
         function updateAlerts(){
-            alertDiv = document.getElementById('alert_div');
-            payload = JSON.parse(http("http://192.168.0.45:8000/alerts/get", "GET", null));
-            getAlerts = payload["alert"]
-            console.log("Current alerts: " + getAlerts);
-            alertDiv.innerHTML = "<span>" + payload + "</span>";
+            alertDiv = document.getElementById("alertdiv");
+            payload = http("http://192.168.0.45:8000/alerts/get", "GET", null);
+            getAlerts = parseStringToList(payload);
+            alertDiv.innerHTML = "";
+            console.log(getAlerts.length)
+            for(i = 0; i<getAlerts.length; i++){
+                console.log("here");
+                alertDiv.innerHTML += `<div class="alerts" style="padding: 20px; background-color: #f44336; color: white;">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';"&times; style="color: white; font-weight: bold; font-size: 16px; line-height: 18px; cursor: pointer; transition: 0.3s; display: block;"</span>
+                    <strong>Alert!</strong> Temperature above boundary!</div>`;
+            }
+            setTimeout(updateAlerts, 1000);
         }
 
 
@@ -89,26 +87,15 @@
 
         function checkCookie(){
             var cookie = getCookie('status');
-            
-            select = document.getElementById("roomSelect")
-            newRoomBtn = document.getElementById("newRoom")
-            deleteRoomBtn = document.getElementById("deleteRoom")
-
             if (cookie != "authorized"){
-                select.disabled = true;
-                newRoomBtn.disabled = true;
-                deleteRoomBtn.disabled = true;
                 location.href = "/";
-            } else {
-                select.disabled = false;
-                newRoomBtn.disabled = false;
-                deleteRoomBtn.disabled = false;
             }
         }
+        
 
         function initialize(){
-            connectClient();
-            checkCookie();            
+            checkCookie();  
+            updateAlerts();          
         }
 
     </script>

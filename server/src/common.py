@@ -8,6 +8,9 @@ class Common:
     sensors: dict = {}
     updates: list = [()]
     rooms: dict = {}
+    alerts: list = []
+
+    
 
     selected_room: str = ''
 
@@ -38,6 +41,26 @@ class Common:
     def register_sensor(self, msg:str):
         self.update_sensors(msg.split('/')[0])
         self.update(PUBLISH, 'archiver/subscribe', msg)
+
+    def append_alert(self, msg:str):
+        self.clean_alerts()
+        self.alerts.append(msg)
+            
+    def get_alerts(self):
+        self.clean_alerts()
+        return self.alerts
+
+    def clean_alerts(self):
+        if len(self.alerts) >= 100:
+            new_alerts = []
+            for i in range(len(self.alerts)):
+                try:
+                    new_alerts.append(self.alerts[i+1])
+                except:
+                    pass
+            self.alerts.clear()
+            self.alerts += new_alerts
+
 
 
     def update_sensors(self, key:str):
