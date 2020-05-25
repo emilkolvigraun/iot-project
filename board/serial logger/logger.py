@@ -1,6 +1,6 @@
 import serial, time
 
-filename = "room.txt"
+filename = "desk.txt"
 with serial.Serial("COM13", 9600) as ser, open(filename, mode='wb') as of:
     
     try:  

@@ -1,14 +1,14 @@
 # 1 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\temperature measurement\\Device\\device.ino"
 # 2 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\temperature measurement\\Device\\device.ino" 2
 
-#define seconds() (millis()/1000);
+#define seconds() (millis());
 
 double systemTime;
 double lastUpdate;
-int updateTime = 0.1;
+int updateTime = 100;
 
 void setup(){
-  systemTime = (millis()/1000);;
+  systemTime = (millis());;
   lastUpdate = systemTime;
 
   Serial.begin(9600);
@@ -20,9 +20,8 @@ void setup(){
 }
 
 void loop(){
-  systemTime = (millis()/1000);;
+  systemTime = (millis());;
   double t1 = systemTime - lastUpdate;
-
   if (t1 >= updateTime){
       float temperature = get_temperature();
       float light = get_ambientLight();
@@ -34,7 +33,7 @@ void loop(){
       Serial.print(",");
       Serial.println(humidity);
 
-    double t3 = (millis()/1000);;
+    double t3 = (millis());;
     lastUpdate = t3 - (systemTime - t3);
   }
 

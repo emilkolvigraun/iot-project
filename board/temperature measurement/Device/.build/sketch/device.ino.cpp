@@ -2,12 +2,12 @@
 #line 1 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\temperature measurement\\Device\\device.ino"
 #include "src/sensor_manager.h"
 
-#define seconds()(millis()/1000);
+#define seconds()(millis());
 
 double systemTime;
 double lastUpdate;
-int updateTime = 0.1; 
-
+int updateTime = 100; 
+ 
 #line 9 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\temperature measurement\\Device\\device.ino"
 void setup();
 #line 21 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\temperature measurement\\Device\\device.ino"
@@ -28,7 +28,6 @@ void setup(){
 void loop(){
   systemTime = seconds();
   double t1 = systemTime - lastUpdate;
-
   if (t1 >= updateTime){
       float temperature = get_temperature();
       float light       = get_ambientLight();
@@ -45,3 +44,4 @@ void loop(){
   }
 
 } 
+

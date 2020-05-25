@@ -11,8 +11,8 @@
 // system time function   
 #define seconds()(millis())
  
-// Offsets for the timeserver
-#define     NTP_OFFSET   7200      // In seconds
+// Offsets for the timeserver 
+#define     NTP_OFFSET   0      // In seconds
 #define     NTP_INTERVAL 60 * 1000    // In miliseconds
 #define     NTP_ADDRESS  "europe.pool.ntp.org"
 WiFiUDP     ntpUDP;
@@ -26,8 +26,8 @@ NTPClient timeNTPClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET, NTP_INTERVAL);
 
 // json file variables
 File                    file;
-StaticJsonDocument<400> config;
-StaticJsonDocument<100>  setpoint;
+StaticJsonDocument<600> config;
+StaticJsonDocument<600>  setpoint;
 
 // ROOM configuration variables
 String          roomName;
@@ -49,7 +49,7 @@ String          MAC_ADDRESS         = "UNSET";
 
 // MQTT server details
 const char*     mqtt_server_ip      = "192.168.1.133"; 
-const int       port                = 1883;
+int             port                = 1883;
 PubSubClient    client(espClient);
  
 // epoch time
@@ -62,8 +62,10 @@ double          lastUpdate          = 0.0;
 double          systemTime          = 0.0; 
 double          timeTaken           = 0.0; 
 int             currentHour         = 0;
-const int       DEADBAND_SIZE       = 1; // celcius 
-const float     CHANGE_LIMIT        = 0.1;
+const int       DEADBAND_SIZE       = 1;    // celcius 
+const float     TEMP_CHANGE_LIMIT   = 0.1;  // celcius
+const float     HUMI_CHANGE_LIMIT   = 1;    // % 
+const float     LUX_CHANGE_LIMIT    = 1;    // lux
   
 // Environment variables
 bool            daytime             = false; 
@@ -89,47 +91,47 @@ double          venWattage          = 0;
 double          venCelcius          = 0;
 double          venDiff             = 0;
 
-#line 90 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 92 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 bool initSDCard();
-#line 100 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 102 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 void writeToConfigFile(char* payload);
-#line 112 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 114 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 void initWifi();
-#line 120 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 122 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 void onMessageReceived(char* topic, byte* message, unsigned int length);
-#line 138 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 140 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 void updateRelevantSetpoint(char* data);
-#line 152 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 154 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 void encodeToJson(char* payload);
-#line 175 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 177 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 bool loadConfigurationFile();
-#line 198 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 200 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 void reconnect();
-#line 210 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 212 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 int getSetpoint();
-#line 218 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 220 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 bool isDay(int currentHour);
-#line 225 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 227 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 double calculateVentilationWattage(float currentTemperature);
-#line 233 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 235 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 double calculateAirMass(float temperature);
-#line 241 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 243 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 double calculateVentilationEffect(double joules, double temperature);
-#line 245 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 247 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 double validateVentilationEffect(double effect, double temperature);
-#line 252 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 254 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 bool isConnectedToMqtt();
-#line 259 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 261 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 float sum(float readings[]);
-#line 267 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 269 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 bool valueChangedEnough(float value, float previousValue, float limit);
-#line 274 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 276 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 void transmitDataIfChanged(float temperature, float humidity, float lux);
 #line 306 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 void setup();
 #line 331 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 void loop();
-#line 90 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
+#line 92 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino"
 bool initSDCard(){
     SPI.begin(SD_CLK, SD_DO, SD_DI, SD_CS);
     if(!SD.begin(SD_CS)){
@@ -184,7 +186,7 @@ void updateRelevantSetpoint(char* data){
     }
 
     int sp = setpoint["setpoint"];
-    int hour = timeNTPClient.getHours();
+    int hour = timeNTPClient.getHours()+2;
     if (hour > 6 && hour < 21){
         temperatureSetpointDay = sp; 
     } else { 
@@ -315,32 +317,30 @@ bool valueChangedEnough(float value, float previousValue, float limit){
 }
 
 void transmitDataIfChanged(float temperature, float humidity, float lux){
-
+  
     if (ventilation){
-        temperature += venCelcius; 
-       if (valueChangedEnough(temperature, getSetpoint(), DEADBAND_SIZE)){
-            venWattage = calculateVentilationWattage(temperature) * ((UPDATE_TIMER/1000)*timesTempNotRep); 
-            venDiff = calculateVentilationEffect(venWattage, temperature);
-            venDiff = validateVentilationEffect(venDiff, temperature);
-            venCelcius += venDiff;
-            temperature += venDiff; 
-        }  
+        temperature += venCelcius;  
+        venWattage = calculateVentilationWattage(temperature);  
+        venDiff = calculateVentilationEffect(venWattage * (UPDATE_TIMER/1000), temperature);
+        venDiff = validateVentilationEffect(venDiff, temperature);
+        venCelcius += venDiff;
+        temperature += venDiff; 
     } 
   
     currentTime = timeNTPClient.getEpochTime(); 
-    if (valueChangedEnough(temperature, lastReportedTem, CHANGE_LIMIT)){
+    if (valueChangedEnough(temperature, lastReportedTem, TEMP_CHANGE_LIMIT)){
         client.publish((MAC_ADDRESS+"/temperature").c_str(), (((String) temperature)+","+roomName+","+((String)currentTime)).c_str());
         lastReportedTem = temperature;
     }  
-    if (valueChangedEnough(venWattage, lastReportedVen, CHANGE_LIMIT)){
+    if (valueChangedEnough(venWattage, lastReportedVen, 100)){
         client.publish((MAC_ADDRESS+"/ventilation").c_str(), (((String) venWattage)+","+roomName+","+((String)currentTime)).c_str());
         lastReportedVen = venWattage;  
     }  
-    if (valueChangedEnough(humidity, lastReportedHum, CHANGE_LIMIT)){
+    if (valueChangedEnough(humidity, lastReportedHum, HUMI_CHANGE_LIMIT)){
         client.publish((MAC_ADDRESS+"/humidity").c_str(), (((String) humidity)+","+roomName+","+((String)currentTime)).c_str());
         lastReportedHum = humidity;
     }  
-    if (valueChangedEnough(lux, lastReportedLux, CHANGE_LIMIT)){
+    if (valueChangedEnough(lux, lastReportedLux, LUX_CHANGE_LIMIT)){
         client.publish((MAC_ADDRESS+"/lux").c_str(), (((String) lux)+","+roomName+","+((String)currentTime)).c_str());
         lastReportedLux = lux;
     }  
@@ -372,16 +372,19 @@ void setup() {
 } 
 
 void loop(){ 
+
+    if (!client.connected()) {
+        reconnect();
+    }  
+    client.loop();
+    
     if (loadedConfig){
         systemTime = seconds();
         if (systemTime - lastUpdate >= UPDATE_TIMER){
             timeNTPClient.update(); 
             currentHour = timeNTPClient.getHours()+2;  
             daytime = isDay(currentHour);
-            if(isConnectedToMqtt()){ 
-                client.loop();
-            }    
-    
+
             temperatureAvg[oldestIndex]  = get_temperature();
             humidityAvg[oldestIndex]     = get_humidity();
             lightAvg[oldestIndex]        = get_ambientLight(); 
