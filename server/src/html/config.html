@@ -238,8 +238,8 @@
                 "tDay":document.getElementById("TdaySlider").value,
                 "tNight":document.getElementById("TnightSlider").value,
                 "tBound":document.getElementById("boundTempSlider").value,
-                "hBound":document.getElementById("boundHumSlider").value,
                 "lBound":document.getElementById("boundLuxSlider").value,
+                "hBound":document.getElementById("boundHumSlider").value,
                 "ventilation":ventilation
             }
             http("http://192.168.1.133:8000/configuration/sensor/set/room", "POST", JSON.stringify(payload));

@@ -41,6 +41,11 @@
                                 <!-- SETPOINT DAY ℃ -->
                                 <font>T setpoint DAY:</font><br>
                                 <input id="setpointDay" type="text" disabled="disabled" value=""></input>
+                                <!-- Temperature bound --> <br>
+                                <font>Temperature bound:</font>
+                                <input id="tBoundRoom" type="text" disabled="disabled" value=""></input><br>
+                                <font>Light bound:</font><br>
+                                <input id="lBoundRoom" type="text" disabled="disabled" value=""></input>
                             </div>
                             <div class="flex-item" style="text-align: left;">
                                 <div style="margin-top: 21px;">
@@ -54,7 +59,9 @@
                                 <input id="roomSize" type="text" disabled="disabled" value=""></input><br>
                                 <!-- NUMBER OF WINDOWS integer -->
                                 <font># of windows:</font><br>
-                                <input id="nrOfWindows" type="text" disabled="disabled" value=""></input>
+                                <input id="nrOfWindows" type="text" disabled="disabled" value=""></input><br>
+                                <font>Humidity bound:</font><br>
+                                <input id="hBoundRoom" type="text" disabled="disabled" value=""></input>
                             </div>
                         </div>
                         <div id="roomImage" style="width: 300px; height: 300px; background-color: rgb(52, 152, 219); margin-left: 90px; margin-top: 0px; border: 1px solid black; ">
@@ -228,6 +235,9 @@
             document.getElementById("setpointDay").value = (parseInt(params["tDay"])) + " ℃";
             document.getElementById("setpointNight").value = (parseInt(params["tNight"])) + " ℃";
             document.getElementById("nrOfWindows").value = (parseInt(params["nrOfWindows"])) + " pcs";
+            document.getElementById("tBoundRoom").value = (parseFloat(params["tBound"])) + " ℃";
+            document.getElementById("hBoundRoom").value = (parseInt(params["tBound"])) + " %";
+            document.getElementById("lBoundRoom").value = (parseInt(params["tBound"])) + " lux";
             amountOfWindows = parseInt(params["nrOfWindows"]);
 
             if (params["ventilation"] == true){

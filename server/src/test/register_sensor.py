@@ -63,7 +63,7 @@ client.stop_loop()
 #             lux = str(get_lux())
 #             client.publish(sensor_name+'/temperature', temperature+','+room_name+','+str(time.time()))
 #             client.publish(sensor_name+'/humidity', humidity+','+room_name+','+str(time.time()))
-            # client.publish(sensor_name+'/lux', lux+','+room_name+','+str(time.time()))
+#             client.publish(sensor_name+'/lux', lux+','+room_name+','+str(time.time()))
 #         client.wait(2)
 # except KeyboardInterrupt:
 #     client.stop_loop()

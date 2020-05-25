@@ -69,6 +69,9 @@ class Common:
             'nrOfWindows': room['nrOfWindows'],
             'tDay': room['tDay'],
             'tNight': room['tNight'],
+            'tBound': room['tBound'],
+            'lBound': room['lBound'],
+            'hBound': room['hBound'],
             'ventilation': room['ventilation']}})
 
         self.write_rooms()
