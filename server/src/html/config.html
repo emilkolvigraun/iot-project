@@ -45,9 +45,6 @@
                                 <!-- Temperature Bound -->
                                 <font>Temperature bound: </font><font id="tBound">0.1℃</font>
                                 <input type="range" min="0.0" max="5.0" value="0.1" step="0.1" class="slider" id="boundTempSlider" onchange="updateTempBound(this.value)">
-                                <!-- Lux Bound --><br>
-                                <font>Light bound: </font><font id="lBound">1 lux</font>
-                                <input type="range" min="1" max="5.0" value="1" class="slider" id="boundLuxSlider" onchange="updateLuxBound(this.value)">
                             </div>
                             <div class="flex-item">
                                 <font>Sensor:</font><br>
@@ -63,9 +60,6 @@
                                 <!-- T DAY -->
                                 <font>T setpoint DAY: </font><font id="Tday">19℃</font> <br>
                                 <input type="range" min="15" max="30" value="19" class="slider" id="TdaySlider" onchange="updateTDay(this.value)">
-                                <!-- Humidity Bound -->
-                                <br><font>Humidity bound: </font><font id="hBound">1%</font> <br>
-                                <input type="range" min="1" max="10.0" value="1" class="slider" id="boundHumSlider" onchange="updateHumBound(this.value)">
                             </div>
                         </div>
                         <div id="roomImage" style="width: 300px; height: 300px; background-color: rgb(52, 152, 219); margin-left: 90px; margin-top: 0px; border: 1px solid black; ">
@@ -238,11 +232,9 @@
                 "tDay":document.getElementById("TdaySlider").value,
                 "tNight":document.getElementById("TnightSlider").value,
                 "tBound":document.getElementById("boundTempSlider").value,
-                "lBound":document.getElementById("boundLuxSlider").value,
-                "hBound":document.getElementById("boundHumSlider").value,
                 "ventilation":ventilation
             }
-            http("http://192.168.1.133:8000/configuration/sensor/set/room", "POST", JSON.stringify(payload));
+            http("http://192.168.0.45:8000/configuration/sensor/set/room", "POST", JSON.stringify(payload));
             error.innerHTML = "";
             location.href = "/rooms";
         }
@@ -264,7 +256,7 @@
         }
 
         function getSensors(){
-            sensors = http("http://192.168.1.133:8000/configuration/sensor/get", "GET", null);
+            sensors = http("http://192.168.0.45:8000/configuration/sensor/get", "GET", null);
             return parseStringToList(sensors);
         }
 
@@ -311,14 +303,6 @@
 
         function updateTempBound(value){
             document.getElementById("tBound").innerHTML = value+"℃";
-        }
-
-        function updateHumBound(value){
-            document.getElementById("hBound").innerHTML = value+"%";
-        }
-
-        function updateLuxBound(value){
-            document.getElementById("lBound").innerHTML = value+" lux";
         }
 
         update();

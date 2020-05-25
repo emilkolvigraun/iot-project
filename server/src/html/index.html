@@ -17,6 +17,7 @@
                             <li><a class="active" href="/">Start Page</a></li>
                             <li><a onclick="goToLive()">Live Data</a></li>
                             <li><a onclick="goToRooms()">Rooms</a></li>
+                            <li><a onclick="goToAlerts()">Alerts</a></li>
                         </ul> 
                     </div>
         
@@ -34,8 +35,8 @@
                            <button onclick="login()">login</button>
                            <p id="errorMsg"></p>
                         </div>
-                <div>
-            <div>           
+                    <div>
+                <div>           
     </body>
 
     <script>
@@ -59,7 +60,7 @@
             username = document.getElementById("usn");
             password = document.getElementById("pwd");
 
-            response = http("http://192.168.1.133:8000/login", "POST", JSON.stringify({"username":username.value, "password":password.value}));
+            response = http("http://192.168.0.45:8000/login", "POST", JSON.stringify({"username":username.value, "password":password.value}));
             
             
             error = document.getElementById("errorMsg");
@@ -84,6 +85,16 @@
                 error.innerHTML = "User not authenticated"
             } else {
                 location.href = "/rooms"
+            }
+        }
+
+        function goToAlerts(){
+            if (authenticated !== true){
+                error = document.getElementById("errorMsg");
+                error.style.color = "red";
+                error.innerHTML = "User not authenticated"
+            } else {
+                location.href = "/alert"
             }
         }
 

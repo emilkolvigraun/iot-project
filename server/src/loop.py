@@ -16,6 +16,8 @@ class MessageReceiver(Receiver):
         # act based on topic
         if message.topic == 'sensor/registration':
             self.com.register_sensor(msg)
+        if message.topic == 'sensor/alert':
+            self.com.register_alert(msg)
 
 
 class Loop(Thread):

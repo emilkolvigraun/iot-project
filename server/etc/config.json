@@ -8,6 +8,7 @@
 
     "topics":{
         "publish": [],
-        "subscribe": ["sensor/registration"]
+        "subscribe": ["sensor/registration", "sensor/alert"]
+
     }
 }

@@ -39,6 +39,7 @@ class Common:
         self.update_sensors(msg.split('/')[0])
         self.update(PUBLISH, 'archiver/subscribe', msg)
 
+
     def update_sensors(self, key:str):
         if key not in self.sensors.keys():
             self.sensors.update({key:{}})
@@ -70,8 +71,6 @@ class Common:
             'tDay': room['tDay'],
             'tNight': room['tNight'],
             'tBound': room['tBound'],
-            'lBound': room['lBound'],
-            'hBound': room['hBound'],
             'ventilation': room['ventilation']}})
 
         self.write_rooms()

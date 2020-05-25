@@ -47,25 +47,25 @@ for a in ['e2b81c5a-1188-48d5-a87e-2d261bf7e71f', '71e19761-ebde-4ff9-9a71-3769e
     client.publish("archiver/stop", "LIVING_ROOM_30:AE:A4:DC:9A:38,"+a)
 client.wait(2)
 client.stop_loop()
-# client.subscribe(sensor_name+'/room/config')
+client.subscribe(sensor_name+'/room/config')
 
-# if room_name is None:
-#     client.publish('sensor/registration', sensor_name+'/temperature')
-#     client.publish('sensor/registration', sensor_name+'/humidity')
-#     client.publish('sensor/registration', sensor_name+'/lux')
+if room_name is None:
+    client.publish('sensor/registration', sensor_name+'/temperature')
+    client.publish('sensor/registration', sensor_name+'/humidity')
+    client.publish('sensor/registration', sensor_name+'/lux')
 
-# try:
-#     while True: 
-#         if room_name != None:
+try:
+    while True: 
+        if room_name != None:
             
-#             temperature = str(get_temperature())
-#             humidity = str(get_humidity())
-#             lux = str(get_lux())
-#             client.publish(sensor_name+'/temperature', temperature+','+room_name+','+str(time.time()))
-#             client.publish(sensor_name+'/humidity', humidity+','+room_name+','+str(time.time()))
-#             client.publish(sensor_name+'/lux', lux+','+room_name+','+str(time.time()))
-#         client.wait(2)
-# except KeyboardInterrupt:
-#     client.stop_loop()
-#     client.disconnect()
+            temperature = str(get_temperature())
+            humidity = str(get_humidity())
+            lux = str(get_lux())
+            client.publish(sensor_name+'/temperature', temperature+','+room_name+','+str(time.time()))
+            client.publish(sensor_name+'/humidity', humidity+','+room_name+','+str(time.time()))
+            client.publish(sensor_name+'/lux', lux+','+room_name+','+str(time.time()))
+        client.wait(2)
+except KeyboardInterrupt:
+    client.stop_loop()
+    client.disconnect()
 
