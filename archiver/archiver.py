@@ -32,10 +32,10 @@ class StorageEngine(Receiver):
         msg = str(message.payload.decode("utf-8"))
         debunked_message = msg.split(',')
 
-        try:
-            self.logger.log('RECEIVED', msg)
-        except Exception as e:
-            print(e)
+        # try: 
+        #     self.logger.log('RECEIVED', msg)
+        # except Exception as e:
+        #     print(e)
 
         if message.topic == 'archiver/subscribe':
             client.subscribe(msg)
