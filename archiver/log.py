@@ -29,7 +29,7 @@ class Log:
     def finish(self):
         self.__write()
 
-    def __getfile(self):
+    def __getfile(self): 
         try:
             f = open(self.folder+self.file+'.txt', 'r')
         except:
@@ -53,7 +53,7 @@ class Log:
         return self.folder+self.file+'.txt'
 
     def __created_new(self):
-        self.log('LOGGGER', 'Created new log:%s'%self.file)
+        self.logs.append(('LOGGGER', 'Created new log:%s'%self.file))
 
     def __write(self):
         with open(self.__getfile(), 'a') as f:

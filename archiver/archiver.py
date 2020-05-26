@@ -2,6 +2,7 @@
 from mqtt_client import Receiver, MQTTClient
 from database import Database
 import json, time
+from log import Log
 
 class StorageEngine(Receiver):
 
@@ -10,6 +11,7 @@ class StorageEngine(Receiver):
     subs: list = []
 
     def __init__(self):
+        self.logger = Log()
         try:
             with open('subs.json', 'r') as f:
                 self.subs = json.loads(''.join(f.readlines()))['subscriptions']
@@ -28,13 +30,18 @@ class StorageEngine(Receiver):
     def on_message(self, client, userdata, message):
         received = str(time.time())
         msg = str(message.payload.decode("utf-8"))
+        debunked_message = msg.split(',')
+
+        # try: 
+        #     self.logger.log('RECEIVED', msg)
+        # except Exception as e:
+        #     print(e)
 
         if message.topic == 'archiver/subscribe':
             client.subscribe(msg)
             self.update_subscriptions(msg)
 
         elif message.topic == 'archiver/get':
-            debunked_message = msg.split(',')
             table = debunked_message[0].replace(':','-')
             data = self.db.get_where(debunked_message[1], debunked_message[2], table)
             client.publish(debunked_message[3], json.dumps(data))
@@ -45,29 +52,27 @@ class StorageEngine(Receiver):
             self.return_topics[table].append(debunked_message[3])
 
         elif message.topic == 'archiver/stop':
-            debunked_message = msg.split(',')
             table = debunked_message[0].replace(':', '-')
-            print('message ->', debunked_message)
-            print('before ->', self.return_topics[table])
             if table in self.return_topics.keys():
                 try:
                     index = self.return_topics[table].index(debunked_message[1])
                     del self.return_topics[table][index]
                 except Exception as e:
-                    print(e)
-            print('after ->', self.return_topics[table])
+                    print(e) 
         else:
             print(message.topic, msg)
-            debunked_message = msg.split(',')
-            debunked_topic   = message.topic.split('/')
+            debunked_topic   = message.topic.split('/') 
             table = debunked_message[1] + '_' + debunked_topic[0]
             table = table.replace(':', '-')
- 
+  
             try:
                 if not self.db.table_exists(table):
                     self.db.create(table)
                 else: 
-                    self.db.insert(table, debunked_message[2], debunked_topic[1], debunked_message[0], received)
+                    packet = '0' 
+                    if len(debunked_message) > 3:
+                        packet = debunked_message[3]
+                    self.db.insert(table, debunked_message[2], debunked_topic[1], debunked_message[0], received, packet)
             except Exception as e:
                 print(e)
 

@@ -36,6 +36,7 @@ int             nrOfWindows;
 int             temperatureSetpointDay; 
 int             temperatureSetpointNight;
 bool            ventilation;
+float           temperatureBound;
 
 // wifi password and name definitons
 const char*     ssid                = "Luke SkyRouter";
@@ -52,38 +53,42 @@ PubSubClient    client(espClient);
  
 // epoch time
 unsigned long   currentTime         = 0; 
- 
+  
 // System time variables  
-const double    UPDATE_TIMER        = 100;
+const double    UPDATE_TIMER        = 100; // milliseconds
 
 double          lastUpdate          = 0.0; 
 double          systemTime          = 0.0; 
 double          timeTaken           = 0.0; 
 int             currentHour         = 0;
-const int       DEADBAND_SIZE       = 1;    // celcius 
-const float     TEMP_CHANGE_LIMIT   = 0.1;  // celcius
-const float     HUMI_CHANGE_LIMIT   = 1;    // % 
-const float     LUX_CHANGE_LIMIT    = 1;    // lux
+const float     TEMP_CHANGE_BOUND   = 0.1;  // celcius
+const float     HUMI_CHANGE_BOUND   = 1;    // % 
+const float     LUX_CHANGE_BOUND    = 2;    // lux
   
 // Environment variables
 bool            daytime             = false; 
 bool            SD_CARD_AVAILABLE   = false; 
 bool            loadedConfig        = false; 
-bool            running             = false;
+bool            tempRunning         = false;
+bool            humRunning          = false;
+bool            luxRunning          = false;
 
 // used for running average
-int             oldestIndex         = 0;  
-const int       AVG_LENGTH          = 125; 
+int             tempOldestIndex     = 0;  
+int             humiOldestIndex     = 0;  
+int             luxOldestIndex      = 0;  
+const int       TEM_AVG_LENGTH      = 125; 
+const int       HUM_AVG_LENGTH      = 100; 
+const int       LUX_AVG_LENGTH      = 75; 
  
-float           temperatureAvg[AVG_LENGTH]; 
-float           humidityAvg[AVG_LENGTH];
-float           lightAvg[AVG_LENGTH]; 
+float           temperatureAvg[TEM_AVG_LENGTH]; 
+float           humidityAvg[HUM_AVG_LENGTH]; 
+float           lightAvg[LUX_AVG_LENGTH]; 
 
 float           lastReportedTem     = 0;
 float           lastReportedHum     = 0;
-float           lastReportedVen     = 0;
+float           lastReportedVen     = 0; 
 float           lastReportedLux     = 0; 
-int             timesTempNotRep     = 1;
  
 double          venWattage          = 0;
 double          venCelcius          = 0;
@@ -141,11 +146,10 @@ void updateRelevantSetpoint(char* data){
     if (deserializeJson(setpoint, data)) {
         return;
     }
-
-    int sp = setpoint["setpoint"];
-    int hour = timeNTPClient.getHours()+2;
-    if (hour > 6 && hour < 21){
-        temperatureSetpointDay = sp; 
+ 
+    int sp = setpoint["setpoint"]; 
+    if (currentHour > 6 && currentHour < 21){
+        temperatureSetpointDay = sp;  
     } else { 
         temperatureSetpointNight = sp;
     }
@@ -163,6 +167,7 @@ void encodeToJson(char* payload){
     unsigned int tDay = config["tDay"];
     unsigned int tNight = config["tNight"];
     bool vent = config["ventilation"];
+    float bound = config["tBound"];
     roomName = room;
     nrOfWindows  = nrWin;
     roomHeight = rHeight; 
@@ -170,6 +175,7 @@ void encodeToJson(char* payload){
     roomLength = rLength;
     temperatureSetpointDay = tDay;
     temperatureSetpointNight = tNight; 
+    temperatureBound = bound;
     ventilation = vent;
     loadedConfig = true; 
 }
@@ -233,18 +239,18 @@ double calculateVentilationWattage(float currentTemperature){
 }
  
 double calculateAirMass(float temperature){
-    double mass =  (101.325*1000) / (287.058 * (temperature * 273.15)) * (roomHeight * roomLength * roomWidth);
+    double mass =  (101.325*1000) / (287.058 * (temperature + 273.15)) * (roomHeight * roomLength * roomWidth);
     if (mass < 0){ 
         mass = mass * -1; 
     }
     return mass;  
 }
   
-double calculateVentilationEffect(double joules, double temperature){
+double calculateVentilationTDiff(double joules, double temperature){
     return (joules / calculateAirMass(temperature)) / 1012;
 } 
 
-double validateVentilationEffect(double effect, double temperature){
+double validateVentilationImpactDirection(double effect, double temperature){
     if (temperature > getSetpoint()){
         return -effect;
     } 
@@ -254,52 +260,64 @@ double validateVentilationEffect(double effect, double temperature){
 bool isConnectedToMqtt(){
     if (!client.connected()) {
         reconnect();
-    } 
+    }  
     return true;
-}
+} 
  
-float sum(float readings[]){
-    float summation = 0;  
-    for (int i = 0; i < AVG_LENGTH; i++){
+float sumMean(float readings[], int length){ 
+    float summation = 0;   
+    for (int i = 0; i < length; i++){
         summation += readings[i];
     }
-    return summation;
+    return summation/length;
 }
 
 bool valueChangedEnough(float value, float previousValue, float limit){
-    if (value > previousValue+limit || value < previousValue-limit){
+    if (value > previousValue+limit || value < previousValue-limit){ 
         return true;
     } 
     return false; 
 }
 
-void transmitDataIfChanged(float temperature, float humidity, float lux){
-  
+void transmitTemperatureIfDataChanged(float temperature){
+
+    venWattage = 0;
     if (ventilation){
         temperature += venCelcius;  
         venWattage = calculateVentilationWattage(temperature);  
-        venDiff = calculateVentilationEffect(venWattage * (UPDATE_TIMER/1000), temperature);
-        venDiff = validateVentilationEffect(venDiff, temperature);
+        venDiff = calculateVentilationTDiff(venWattage * (UPDATE_TIMER/1000), temperature);
+        venDiff = validateVentilationImpactDirection(venDiff, temperature);
         venCelcius += venDiff;
         temperature += venDiff; 
+        Serial.println(lastReportedTem+TEMP_CHANGE_BOUND, 1);
     } 
-  
+   
     currentTime = timeNTPClient.getEpochTime(); 
-    if (valueChangedEnough(temperature, lastReportedTem, TEMP_CHANGE_LIMIT)){
-        client.publish((MAC_ADDRESS+"/temperature").c_str(), (((String) temperature)+","+roomName+","+((String)currentTime)).c_str());
+    if (valueChangedEnough(temperature, lastReportedTem, TEMP_CHANGE_BOUND)){
+        client.publish((MAC_ADDRESS+"/temperature").c_str(), (((String) temperature)+","+roomName+","+((String)currentTime)+","+((String)tempOldestIndex)).c_str());
         lastReportedTem = temperature;
     }  
     if (valueChangedEnough(venWattage, lastReportedVen, 100)){
         client.publish((MAC_ADDRESS+"/ventilation").c_str(), (((String) venWattage)+","+roomName+","+((String)currentTime)).c_str());
         lastReportedVen = venWattage;  
-    }  
-    if (valueChangedEnough(humidity, lastReportedHum, HUMI_CHANGE_LIMIT)){
-        client.publish((MAC_ADDRESS+"/humidity").c_str(), (((String) humidity)+","+roomName+","+((String)currentTime)).c_str());
+    }   
+    if (valueChangedEnough(temperature, getSetpoint(), temperatureBound)){
+        client.publish("sensor/alert", ("room="+roomName+", temperature="+(String) temperature).c_str());
+    }
+}
+
+void transmitHumidityIfDataChanged(float humidity){ 
+    if (valueChangedEnough(humidity, lastReportedHum, HUMI_CHANGE_BOUND)){
+        client.publish((MAC_ADDRESS+"/humidity").c_str(), (((String) humidity)+","+roomName+","+((String)currentTime)+","+((String)humiOldestIndex)).c_str());
         lastReportedHum = humidity;
-    }  
-    if (valueChangedEnough(lux, lastReportedLux, LUX_CHANGE_LIMIT)){
-        client.publish((MAC_ADDRESS+"/lux").c_str(), (((String) lux)+","+roomName+","+((String)currentTime)).c_str());
-        lastReportedLux = lux;
+    }
+ 
+}
+
+void transmitLuxIfDataChanged(float lux){ 
+    if (valueChangedEnough(lux, lastReportedLux, LUX_CHANGE_BOUND)){
+        client.publish((MAC_ADDRESS+"/lux").c_str(), (((String) lux)+","+roomName+","+((String)currentTime)+","+((String)luxOldestIndex)).c_str());
+        lastReportedLux = lux; 
     }  
 }
 
@@ -342,18 +360,35 @@ void loop(){
             currentHour = timeNTPClient.getHours()+2;  
             daytime = isDay(currentHour);
 
-            temperatureAvg[oldestIndex]  = get_temperature();
-            humidityAvg[oldestIndex]     = get_humidity();
-            lightAvg[oldestIndex]        = get_ambientLight(); 
+            temperatureAvg[tempOldestIndex]  = get_temperature();
+            humidityAvg[humiOldestIndex]     = get_humidity();
+            lightAvg[luxOldestIndex]         = get_ambientLight(); 
             
-            if (running){
-                transmitDataIfChanged(sum(temperatureAvg)/AVG_LENGTH, sum(humidityAvg)/AVG_LENGTH, sum(lightAvg)/AVG_LENGTH);
+            if (tempRunning){
+                transmitTemperatureIfDataChanged(sumMean(temperatureAvg, TEM_AVG_LENGTH));
+            }
+            if (humRunning){
+                transmitHumidityIfDataChanged(sumMean(humidityAvg, HUM_AVG_LENGTH));
+            }
+            if (luxRunning){
+                transmitLuxIfDataChanged(sumMean(lightAvg, LUX_AVG_LENGTH)); 
             }
     
-            oldestIndex += 1;
-            if (oldestIndex >= AVG_LENGTH-1){  
-                running = true;
-                oldestIndex = 0;
+            tempOldestIndex += 1;
+            humiOldestIndex += 1;
+            luxOldestIndex  += 1;
+
+            if (tempOldestIndex >= TEM_AVG_LENGTH-1){  
+                tempRunning     = true;
+                tempOldestIndex = 0;
+            } 
+            if (humiOldestIndex >= HUM_AVG_LENGTH-1){  
+                humRunning      = true;
+                humiOldestIndex = 0;
+            }
+            if (luxOldestIndex >= LUX_AVG_LENGTH-1){  
+                luxRunning      = true;
+                luxOldestIndex  = 0;
             }
 
             timeTaken = seconds(); 

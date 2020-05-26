@@ -234,7 +234,7 @@
                 "tBound":document.getElementById("boundTempSlider").value,
                 "ventilation":ventilation
             }
-            http("http://192.168.0.45:8000/configuration/sensor/set/room", "POST", JSON.stringify(payload));
+            http("http://192.168.1.133:8000/configuration/sensor/set/room", "POST", JSON.stringify(payload));
             error.innerHTML = "";
             location.href = "/rooms";
         }
@@ -256,7 +256,7 @@
         }
 
         function getSensors(){
-            sensors = http("http://192.168.0.45:8000/configuration/sensor/get", "GET", null);
+            sensors = http("http://192.168.1.133:8000/configuration/sensor/get", "GET", null);
             return parseStringToList(sensors);
         }
 
