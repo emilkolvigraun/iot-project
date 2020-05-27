@@ -44,16 +44,6 @@ client = MQTTClient(receiver)
   
 client.start_loop()
 
-for i in range(0, 150):
-    client.publish('sensor/alert', 'test')
-
-# for a in ['e2b81c5a-1188-48d5-a87e-2d261bf7e71f', '71e19761-ebde-4ff9-9a71-3769ee221a9a', '13b4e90e-7ea7-46e4-92a4-669779139777']:
-#     client.publish("archiver/stop", "LIVING_ROOM_30:AE:A4:DC:9A:38,"+a)
-client.wait(2)
-client.stop_loop()
-client.disconnect()
-exit(0)
-
 client.subscribe(sensor_name+'/room/config')
 
 if room_name is None:
