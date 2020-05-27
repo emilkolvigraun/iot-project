@@ -43,7 +43,7 @@ receiver = OnReceive()
 client = MQTTClient(receiver)
   
 client.start_loop()
-
+ 
 client.subscribe(sensor_name+'/room/config')
 
 if room_name is None:

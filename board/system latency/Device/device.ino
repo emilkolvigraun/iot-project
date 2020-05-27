@@ -31,7 +31,12 @@ void initWifi(){
 }  
 
 void onMessageReceived(char* topic, byte* message, unsigned int length) {
-   client.publish("latency/response", ((String)counter).c_str());
+    char payload[length];
+    for (int i=0;i<length;i++) 
+    {
+        payload[i] = (char)message[i];
+    }  
+   client.publish("latency/response", ((String)counter + "," + ((String) payload)).c_str());
    counter += 1;
 }
  

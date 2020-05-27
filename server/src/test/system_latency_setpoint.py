@@ -26,9 +26,9 @@ try:
 
     while True:
             t1 = time.time() 
-            t0 = t1 - timer
+            t0 = t1 - timer 
             if t0 >= update:
-                requests.post('http://192.168.1.133:8000/configuration/room/setpoint/update', data=json.dumps({"sensor":'30:AE:A4:DC:9A:38', "setpoint":random.randint(20,30), "time":'day'}))
+                requests.post('http://192.168.1.133:8000/configuration/room/setpoint/update', data=json.dumps({"sensor":'30:AE:A4:DC:9A:38', "counter":str(sender), "time":'day'}))
                 with open('latency_log_send.txt', mode='a') as f:
                     f.write(str(time.time())+","+str(sender)+"\n")
                 counter += 1

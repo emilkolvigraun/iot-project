@@ -28,11 +28,11 @@ int counter = 0;
 void initWifi();
 #line 33 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void onMessageReceived(char* topic, byte* message, unsigned int length);
-#line 38 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
+#line 43 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void reconnect();
-#line 48 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
+#line 53 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void setup();
-#line 56 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
+#line 61 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void loop();
 #line 25 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void initWifi(){
@@ -44,7 +44,12 @@ void initWifi(){
 }  
 
 void onMessageReceived(char* topic, byte* message, unsigned int length) {
-   client.publish("latency/response", ((String)counter).c_str());
+    char payload[length];
+    for (int i=0;i<length;i++) 
+    {
+        payload[i] = (char)message[i];
+    }  
+   client.publish("latency/response", ((String)counter + "," + ((String) payload)).c_str());
    counter += 1;
 }
  

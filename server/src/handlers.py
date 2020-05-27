@@ -112,11 +112,11 @@ class Handler:
         self.com.append_room(payload)
         self.com.update(common.PUBLISH, payload['sensor']+'/room/config', json.dumps(payload))
         return web.Response(status=200)
-
+ 
     async def update_setpoint(self, request):
-        payload = await request.json()
-        self.com.update_setpoint(payload)
-        self.com.update(common.PUBLISH, payload['sensor']+'/setpoint', json.dumps({ "setpoint": payload['setpoint'] }))
+        payload = await request.json() 
+        self.com.update_setpoint(payload) 
+        self.com.update(common.PUBLISH, payload['sensor']+'/setpoint', payload['counter']))
         return web.Response(status=200)
 
     async def delete_room(self, request):
