@@ -19,8 +19,8 @@ try:
     timer = time.time()  
     update = 1/1000
     sender = 0 
-    while True:
-            t1 = time.time()    
+    while True:  
+            t1 = time.time()     
             t0 = t1 - timer  
             if t0 >= update:
                 print(str(time.time())+",send,"+str(sender))
