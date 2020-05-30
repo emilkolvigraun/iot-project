@@ -2,11 +2,8 @@
 #include <PubSubClient.h>
 #include "src/sensor_manager.h"
 #include <ArduinoJson.h>
-#include "SD.h"
-#include <WiFiUdp.h>
-#include <NTPClient.h> 
 
-
+ 
 // wifi password and name definitons
 const char*     ssid                = "Luke SkyRouter";
 const char*     pass                = "NT7TVT4WS3HAFX";
@@ -19,8 +16,8 @@ String          MAC_ADDRESS         = "UNSET";
 const char*     mqtt_server_ip      = "192.168.1.133"; 
 int             port                = 1883;
 PubSubClient    client(espClient);
-
-int counter = 0; 
+ 
+StaticJsonDocument<300>  jsonFile;
 
 void initWifi(){
     WiFi.begin(ssid, pass);
@@ -28,17 +25,22 @@ void initWifi(){
         delay(500);
     }
     MAC_ADDRESS = WiFi.macAddress();
-}  
-
+}   
+  
 void onMessageReceived(char* topic, byte* message, unsigned int length) {
-    char payload[length];
+    char payload[length];  
     for (int i=0;i<length;i++) 
     {
         payload[i] = (char)message[i];
     }  
-   client.publish("latency/response", ((String)counter + "," + ((String) payload)).c_str());
-   counter += 1;
-}
+    if (deserializeJson(jsonFile, payload)) {
+        client.publish("latency/response", "received,NaN"); 
+        return;
+    }     
+    const char* receivedCounter = jsonFile["counter"]; 
+    String received = (String) receivedCounter; 
+    client.publish("latency/response", ("received,"+received).c_str());
+} 
  
 void reconnect() {
     while (!client.connected()) {

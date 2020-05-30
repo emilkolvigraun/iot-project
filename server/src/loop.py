@@ -33,7 +33,7 @@ class Loop(Thread):
 
     def run(self):
 
-        jobs = self.com.number_of_updates()
+        jobs = self.com.jobs()
 
         while jobs > 0:
             for task in self.com.tasks():
@@ -43,7 +43,7 @@ class Loop(Thread):
                 elif task[0] == common.SUBSCRIBE:
                     self.mqtt.subscribe(task[1])
 
-            jobs = self.com.number_of_updates()
+            jobs = self.com.jobs()
 
         self.mqtt.stop_loop()
 

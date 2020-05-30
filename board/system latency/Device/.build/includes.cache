@@ -26,26 +26,6 @@
   },
   {
     "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\.build\\sketch\\device.ino.cpp",
-    "Include": "SD.h",
-    "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\SD\\src"
-  },
-  {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\.build\\sketch\\device.ino.cpp",
-    "Include": "FS.h",
-    "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\FS\\src"
-  },
-  {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\.build\\sketch\\device.ino.cpp",
-    "Include": "SPI.h",
-    "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\SPI\\src"
-  },
-  {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\.build\\sketch\\device.ino.cpp",
-    "Include": "NTPClient.h",
-    "Includepath": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\libraries\\NTPClient"
-  },
-  {
-    "Sourcefile": "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\.build\\sketch\\device.ino.cpp",
     "Include": "",
     "Includepath": null
   },
@@ -121,41 +101,6 @@
   },
   {
     "Sourcefile": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\libraries\\PubSubClient\\src\\PubSubClient.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\SD\\src\\SD.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\SD\\src\\sd_diskio.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\SD\\src\\sd_diskio_crc.c",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\FS\\src\\FS.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\FS\\src\\vfs_api.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.4\\libraries\\SPI\\src\\SPI.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "C:\\Users\\emilk\\AppData\\Local\\Arduino15\\packages\\libraries\\NTPClient\\NTPClient.cpp",
     "Include": "",
     "Includepath": null
   }

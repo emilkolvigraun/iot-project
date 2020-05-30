@@ -50,15 +50,12 @@ void init_ambient_light_sensor(){
     iot_bh1750_set_measure_mode(bh1750, cmd_measure);
 }
 
-
-
 void initSensors(){
     i2c_master_init();
     init_humiture_sensor();
     init_ambient_light_sensor();
 
 }
-
 
 float get_temperature(){
     int16_t temperature;

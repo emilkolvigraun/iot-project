@@ -4,7 +4,7 @@
     Handlers for the http server implemented here
 
     @Author     Emil Stubbe Kolvig-Raun
-    @Contanct   emstu15@student.sdu.dk
+    @Contact   emstu15@student.sdu.dk
 
     @Author     Morten Abrahamsen Olesen
     @Contanct   moole15@student.sdu.dk

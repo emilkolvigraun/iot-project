@@ -181,11 +181,4 @@ c:\Users\emilk\Documents\IoT\project\iot-project\board\system\ latency\Device\.b
  c:\Users\emilk\Documents\IoT\project\iot-project\board\system\ latency\Device\.build\sketch\src/sensor_manager.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\libraries\ArduinoJson\src/ArduinoJson.h \
  C:\Users\emilk\AppData\Local\Arduino15\packages\libraries\ArduinoJson\src/ArduinoJson.hpp \
- C:\Users\emilk\AppData\Local\Arduino15\packages\libraries\ArduinoJson\src/ArduinoJson/Configuration.hpp \
- C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\SD\src/SD.h \
- C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\FS\src/FS.h \
- C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\SPI\src/SPI.h \
- C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\cores\esp32/esp32-hal-spi.h \
- C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\SD\src/sd_defines.h \
- C:\Users\emilk\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4\libraries\WiFi\src/WiFiUdp.h \
- C:\Users\emilk\AppData\Local\Arduino15\packages\libraries\NTPClient/NTPClient.h
+ C:\Users\emilk\AppData\Local\Arduino15\packages\libraries\ArduinoJson\src/ArduinoJson/Configuration.hpp

@@ -4,11 +4,8 @@
 #include <PubSubClient.h>
 #include "src/sensor_manager.h"
 #include <ArduinoJson.h>
-#include "SD.h"
-#include <WiFiUdp.h>
-#include <NTPClient.h> 
 
-
+ 
 // wifi password and name definitons
 const char*     ssid                = "Luke SkyRouter";
 const char*     pass                = "NT7TVT4WS3HAFX";
@@ -21,37 +18,42 @@ String          MAC_ADDRESS         = "UNSET";
 const char*     mqtt_server_ip      = "192.168.1.133"; 
 int             port                = 1883;
 PubSubClient    client(espClient);
+ 
+StaticJsonDocument<300>  jsonFile;
 
-int counter = 0; 
-
-#line 25 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
+#line 22 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void initWifi();
-#line 33 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
+#line 30 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void onMessageReceived(char* topic, byte* message, unsigned int length);
-#line 43 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
+#line 45 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void reconnect();
-#line 53 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
+#line 55 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void setup();
-#line 61 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
+#line 63 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void loop();
-#line 25 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
+#line 22 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino"
 void initWifi(){
     WiFi.begin(ssid, pass);
     while(WiFi.status() != WL_CONNECTED){ 
         delay(500);
     }
     MAC_ADDRESS = WiFi.macAddress();
-}  
-
+}   
+  
 void onMessageReceived(char* topic, byte* message, unsigned int length) {
-    char payload[length];
+    char payload[length];  
     for (int i=0;i<length;i++) 
     {
         payload[i] = (char)message[i];
     }  
-   client.publish("latency/response", ((String)counter + "," + ((String) payload)).c_str());
-   counter += 1;
-}
+    if (deserializeJson(jsonFile, payload)) {
+        client.publish("latency/response", "received,NaN"); 
+        return;
+    }     
+    const char* receivedCounter = jsonFile["counter"]; 
+    String received = (String) receivedCounter; 
+    client.publish("latency/response", ("received,"+received).c_str());
+} 
  
 void reconnect() {
     while (!client.connected()) {

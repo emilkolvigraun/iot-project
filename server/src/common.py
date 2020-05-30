@@ -26,7 +26,7 @@ class Common:
     def update(self, action:int, topic:str, data:str=None):
         self.updates.append((action, topic, data))
 
-    def number_of_updates(self):
+    def jobs(self):
         return len(self.updates)
 
     def tasks(self):

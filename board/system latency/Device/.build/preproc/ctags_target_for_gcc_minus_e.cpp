@@ -3,9 +3,6 @@
 # 3 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino" 2
 # 4 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino" 2
 # 5 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino" 2
-# 6 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino" 2
-# 7 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino" 2
-# 8 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\system latency\\Device\\device.ino" 2
 
 
 // wifi password and name definitons
@@ -21,7 +18,7 @@ const char* mqtt_server_ip = "192.168.1.133";
 int port = 1883;
 PubSubClient client(espClient);
 
-int counter = 0;
+StaticJsonDocument<300> jsonFile;
 
 void initWifi(){
     WiFi.begin(ssid, pass);
@@ -37,8 +34,13 @@ void onMessageReceived(char* topic, byte* message, unsigned int length) {
     {
         payload[i] = (char)message[i];
     }
-   client.publish("latency/response", ((String)counter + "," + ((String) payload)).c_str());
-   counter += 1;
+    if (deserializeJson(jsonFile, payload)) {
+        client.publish("latency/response", "received,NaN");
+        return;
+    }
+    const char* receivedCounter = jsonFile["counter"];
+    String received = (String) receivedCounter;
+    client.publish("latency/response", ("received,"+received).c_str());
 }
 
 void reconnect() {

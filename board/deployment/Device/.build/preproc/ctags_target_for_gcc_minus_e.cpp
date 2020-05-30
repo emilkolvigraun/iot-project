@@ -8,14 +8,14 @@
 # 8 "c:\\Users\\emilk\\Documents\\IoT\\project\\iot-project\\board\\deployment\\Device\\device.ino" 2
 
 // system time function   
-#define seconds() (millis())
+#define milliseconds() (millis())
 
 // Offsets for the timeserver 
-#define NTP_OFFSET 0 /* In seconds*/
-#define NTP_INTERVAL 60 * 1000 /* In miliseconds*/
+#define NTP_OFFSET 0 /* In milliseconds*/
+#define NTP_INTERVAL 60 * 1000 /* In milimilliseconds*/
 #define NTP_ADDRESS "europe.pool.ntp.org"
 WiFiUDP ntpUDP;
-NTPClient timeNTPClient(ntpUDP, "europe.pool.ntp.org", 0 /* In seconds*/, 60 * 1000 /* In miliseconds*/);
+NTPClient timeNTPClient(ntpUDP, "europe.pool.ntp.org", 0 /* In milliseconds*/, 60 * 1000 /* In milimilliseconds*/);
 
 // SD card pins 
 #define SD_CLK 14
@@ -33,7 +33,6 @@ String roomName;
 int roomHeight;
 int roomWidth;
 int roomLength;
-int nrOfWindows;
 int temperatureSetpointDay;
 int temperatureSetpointNight;
 bool ventilation;
@@ -42,7 +41,6 @@ float temperatureBound;
 // wifi password and name definitons
 const char* ssid = "Luke SkyRouter";
 const char* pass = "NT7TVT4WS3HAFX";
-WiFiClient espClient;
 
 // device MAC address used for identification
 String MAC_ADDRESS = "UNSET";
@@ -50,13 +48,14 @@ String MAC_ADDRESS = "UNSET";
 // MQTT server details
 const char* mqtt_server_ip = "192.168.1.133";
 int port = 1883;
+WiFiClient espClient;
 PubSubClient client(espClient);
 
 // epoch time
 unsigned long currentTime = 0;
 
 // System time variables  
-const double UPDATE_TIMER = 100; // milliseconds
+const double UPDATE_TIMER = 10; // millimilliseconds
 
 double lastUpdate = 0.0;
 double systemTime = 0.0;
@@ -78,9 +77,9 @@ bool luxRunning = false;
 int tempOldestIndex = 0;
 int humiOldestIndex = 0;
 int luxOldestIndex = 0;
-const int TEM_AVG_LENGTH = 125;
-const int HUM_AVG_LENGTH = 100;
-const int LUX_AVG_LENGTH = 75;
+const int TEM_AVG_LENGTH = 75;
+const int HUM_AVG_LENGTH = 50;
+const int LUX_AVG_LENGTH = 50;
 
 float temperatureAvg[TEM_AVG_LENGTH];
 float humidityAvg[HUM_AVG_LENGTH];
@@ -95,7 +94,7 @@ double venWattage = 0;
 double venCelcius = 0;
 double venDiff = 0;
 
-bool initSDCard(){
+bool init_SD_card(){
     SPI.begin(14, 2, 15, 13);
     if(!SD.begin(13)){
         return false;
@@ -105,7 +104,7 @@ bool initSDCard(){
     return true;
 }
 
-void writeToConfigFile(char* payload){
+void write_to_config_file(char* payload){
     if (SD.exists("/config.txt")) {
         SD.remove("/config.txt");
     }
@@ -117,7 +116,7 @@ void writeToConfigFile(char* payload){
     }
 }
 
-void initWifi(){
+void init_wifi(){
     WiFi.begin(ssid, pass);
     while(WiFi.status() != WL_CONNECTED){
         delay(500);
@@ -125,7 +124,7 @@ void initWifi(){
     MAC_ADDRESS = WiFi.macAddress();
 }
 
-void onMessageReceived(char* topic, byte* message, unsigned int length) {
+void on_message_received(char* topic, byte* message, unsigned int length) {
     char payload[length];
     for (int i=0;i<length;i++)
     {
@@ -133,17 +132,17 @@ void onMessageReceived(char* topic, byte* message, unsigned int length) {
     }
     if (((String) topic) == (MAC_ADDRESS+"/room/config")){
         if (SD_CARD_AVAILABLE){
-        writeToConfigFile(payload);
+        write_to_config_file(payload);
         }
-        encodeToJson(payload);
+        encode_to_json(payload);
     } else if (((String) topic) == (MAC_ADDRESS+"/setpoint")){
-        updateRelevantSetpoint(payload);
+        update_relevant_setpoint(payload);
     }
     Serial.println("received:");
     Serial.println(payload);
 }
 
-void updateRelevantSetpoint(char* data){
+void update_relevant_setpoint(char* data){
     if (deserializeJson(setpoint, data)) {
         return;
     }
@@ -156,12 +155,11 @@ void updateRelevantSetpoint(char* data){
     }
 }
 
-void encodeToJson(char* payload){
+void encode_to_json(char* payload){
     if (deserializeJson(config, payload)) {
         return;
     }
     const char* room = config["room"];
-    unsigned int nrWin = config["nrOfWindows"];
     unsigned int rWidth = config["roomWidth"];
     unsigned int rHeight = config["roomHeight"];
     unsigned int rLength = config["roomLength"];
@@ -170,7 +168,6 @@ void encodeToJson(char* payload){
     bool vent = config["ventilation"];
     float bound = config["tBound"];
     roomName = room;
-    nrOfWindows = nrWin;
     roomHeight = rHeight;
     roomWidth = rWidth;
     roomLength = rLength;
@@ -181,7 +178,7 @@ void encodeToJson(char* payload){
     loadedConfig = true;
 }
 
-bool loadConfigurationFile(){
+bool load_configuration_file(){
     file = SD.open("/config.txt");
     if(file){
         char content[file.size()];
@@ -198,7 +195,7 @@ bool loadConfigurationFile(){
         }
 
         if (i > 150){
-            encodeToJson(content);
+            encode_to_json(content);
         }
         file.close();
     }
@@ -216,7 +213,7 @@ void reconnect() {
     }
 }
 
-int getSetpoint(){
+int get_setpoint(){
     if (daytime){
         return temperatureSetpointDay;
     } else {
@@ -224,22 +221,22 @@ int getSetpoint(){
     }
 }
 
-bool isDay(int currentHour){
+bool is_day(int currentHour){
     if (currentHour > 6 && currentHour < 21){
         return true;
     }
     return false;
 }
 
-double calculateVentilationWattage(float currentTemperature){
-    if (currentTemperature > getSetpoint()) {
-        return ((currentTemperature - getSetpoint()) * 8.4) * 100;
+double calculate_ventilation_wattage(float currentTemperature){
+    if (currentTemperature > get_setpoint()) {
+        return ((currentTemperature - get_setpoint()) * 8.4) * 100;
     } else {
-        return ((getSetpoint() - currentTemperature) * 8.4) * 100;
+        return ((get_setpoint() - currentTemperature) * 8.4) * 100;
     }
 }
 
-double calculateAirMass(float temperature){
+double calculate_air_mass(float temperature){
     double mass = (101.325*1000) / (287.058 * (temperature + 273.15)) * (roomHeight * roomLength * roomWidth);
     if (mass < 0){
         mass = mass * -1;
@@ -247,25 +244,25 @@ double calculateAirMass(float temperature){
     return mass;
 }
 
-double calculateVentilationTDiff(double joules, double temperature){
-    return (joules / calculateAirMass(temperature)) / 1012;
+double calculate_ventilation_T_diff(double joules, double temperature){
+    return (joules / calculate_air_mass(temperature)) / 1012;
 }
 
-double validateVentilationImpactDirection(double effect, double temperature){
-    if (temperature > getSetpoint()){
+double validate_ventilation_impact_direction(double effect, double temperature){
+    if (temperature > get_setpoint()){
         return -effect;
     }
     return effect;
 }
 
-bool isConnectedToMqtt(){
+bool is_connected_to_mqtt(){
     if (!client.connected()) {
         reconnect();
     }
     return true;
 }
 
-float sumMean(float readings[], int length){
+float sum_mean(float readings[], int length){
     float summation = 0;
     for (int i = 0; i < length; i++){
         summation += readings[i];
@@ -273,50 +270,50 @@ float sumMean(float readings[], int length){
     return summation/length;
 }
 
-bool valueChangedEnough(float value, float previousValue, float limit){
+bool value_changed_enough(float value, float previousValue, float limit){
     if (value > previousValue+limit || value < previousValue-limit){
         return true;
     }
     return false;
 }
 
-void transmitTemperatureIfDataChanged(float temperature){
+void transmit_temperature_if_data_changed(float temperature){
 
     venWattage = 0;
     if (ventilation){
         temperature += venCelcius;
-        venWattage = calculateVentilationWattage(temperature);
-        venDiff = calculateVentilationTDiff(venWattage * (UPDATE_TIMER/1000), temperature);
-        venDiff = validateVentilationImpactDirection(venDiff, temperature);
+        venWattage = calculate_ventilation_wattage(temperature);
+        venDiff = calculate_ventilation_T_diff(venWattage * (UPDATE_TIMER/1000), temperature);
+        venDiff = validate_ventilation_impact_direction(venDiff, temperature);
         venCelcius += venDiff;
         temperature += venDiff;
         Serial.println(lastReportedTem+TEMP_CHANGE_BOUND, 1);
     }
 
     currentTime = timeNTPClient.getEpochTime();
-    if (valueChangedEnough(temperature, lastReportedTem, TEMP_CHANGE_BOUND)){
+    if (value_changed_enough(temperature, lastReportedTem, TEMP_CHANGE_BOUND)){
         client.publish((MAC_ADDRESS+"/temperature").c_str(), (((String) temperature)+","+roomName+","+((String)currentTime)+","+((String)tempOldestIndex)).c_str());
         lastReportedTem = temperature;
     }
-    if (valueChangedEnough(venWattage, lastReportedVen, 100)){
+    if (value_changed_enough(venWattage, lastReportedVen, 100)){
         client.publish((MAC_ADDRESS+"/ventilation").c_str(), (((String) venWattage)+","+roomName+","+((String)currentTime)).c_str());
         lastReportedVen = venWattage;
     }
-    if (valueChangedEnough(temperature, getSetpoint(), temperatureBound)){
+    if (value_changed_enough(temperature, get_setpoint(), temperatureBound)){
         client.publish("sensor/alert", ("room="+roomName+", temperature="+(String) temperature).c_str());
     }
 }
 
-void transmitHumidityIfDataChanged(float humidity){
-    if (valueChangedEnough(humidity, lastReportedHum, HUMI_CHANGE_BOUND)){
+void transmit_humidity_if_data_changed(float humidity){
+    if (value_changed_enough(humidity, lastReportedHum, HUMI_CHANGE_BOUND)){
         client.publish((MAC_ADDRESS+"/humidity").c_str(), (((String) humidity)+","+roomName+","+((String)currentTime)+","+((String)humiOldestIndex)).c_str());
         lastReportedHum = humidity;
     }
 
 }
 
-void transmitLuxIfDataChanged(float lux){
-    if (valueChangedEnough(lux, lastReportedLux, LUX_CHANGE_BOUND)){
+void transmit_lux_if_data_changed(float lux){
+    if (value_changed_enough(lux, lastReportedLux, LUX_CHANGE_BOUND)){
         client.publish((MAC_ADDRESS+"/lux").c_str(), (((String) lux)+","+roomName+","+((String)currentTime)+","+((String)luxOldestIndex)).c_str());
         lastReportedLux = lux;
     }
@@ -326,19 +323,19 @@ void setup() {
     Serial.begin(9600);
     delay(1);
 
-    if (initSDCard()){
-        loadConfigurationFile();
+    if (init_SD_card()){
+        load_configuration_file();
         SD_CARD_AVAILABLE = true;
     }
 
-    initWifi();
+    init_wifi();
     timeNTPClient.begin();
     initSensors();
 
     client.setServer(mqtt_server_ip, port);
-    client.setCallback(onMessageReceived);
+    client.setCallback(on_message_received);
 
-    if (isConnectedToMqtt()){
+    if (is_connected_to_mqtt()){
         client.publish("sensor/registration", (MAC_ADDRESS+"/temperature").c_str());
         client.publish("sensor/registration", (MAC_ADDRESS+"/humidity").c_str());
         client.publish("sensor/registration", (MAC_ADDRESS+"/lux").c_str());
@@ -359,20 +356,20 @@ void loop(){
         if (systemTime - lastUpdate >= UPDATE_TIMER){
             timeNTPClient.update();
             currentHour = timeNTPClient.getHours()+2;
-            daytime = isDay(currentHour);
+            daytime = is_day(currentHour);
 
             temperatureAvg[tempOldestIndex] = get_temperature();
             humidityAvg[humiOldestIndex] = get_humidity();
             lightAvg[luxOldestIndex] = get_ambientLight();
 
             if (tempRunning){
-                transmitTemperatureIfDataChanged(sumMean(temperatureAvg, TEM_AVG_LENGTH));
+                transmit_temperature_if_data_changed(sum_mean(temperatureAvg, TEM_AVG_LENGTH));
             }
             if (humRunning){
-                transmitHumidityIfDataChanged(sumMean(humidityAvg, HUM_AVG_LENGTH));
+                transmit_humidity_if_data_changed(sum_mean(humidityAvg, HUM_AVG_LENGTH));
             }
             if (luxRunning){
-                transmitLuxIfDataChanged(sumMean(lightAvg, LUX_AVG_LENGTH));
+                transmit_lux_if_data_changed(sum_mean(lightAvg, LUX_AVG_LENGTH));
             }
 
             tempOldestIndex += 1;

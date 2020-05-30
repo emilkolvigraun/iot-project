@@ -69,10 +69,7 @@ class StorageEngine(Receiver):
                 if not self.db.table_exists(table):
                     self.db.create(table)
                 else: 
-                    packet = '0' 
-                    if len(debunked_message) > 3:
-                        packet = debunked_message[3]
-                    self.db.insert(table, debunked_message[2], debunked_topic[1], debunked_message[0], received, packet)
+                    self.db.insert(table, debunked_message[2], debunked_topic[1], debunked_message[0], received)
             except Exception as e:
                 print(e)
 
