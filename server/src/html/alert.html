@@ -63,14 +63,12 @@
             payload = http("http://192.168.1.133:8000/alerts/get", "GET", null);
             getAlerts = parseStringToList(payload);
             alertDiv.innerHTML = "";
-            console.log(getAlerts.length)
             for(i = 0; i<getAlerts.length; i++){
-                console.log("here");
                 alertDiv.innerHTML += `<div class"container"><div class="alert alert-danger alert-dismissible" style="padding: 20px; background-color: #f44336; color: white;">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close" style="border: 3px; width: 10%;">&times;</a>
-                    <strong>Warning!</strong> Temperature is: ` + getAlerts[i] + ` ℃ out of bounds!</div></div>`;
+                    <strong>Warning!</strong>` + getAlerts[i] + `</div></div>`;
             }
-            setTimeout(updateAlerts, 5000);
+            setTimeout(updateAlerts, 5000);  
         }
 
 
